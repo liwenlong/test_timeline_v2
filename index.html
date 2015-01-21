@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+    <meta name="google" value="notranslate">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>test 轴</title>
+    <style>
+   
+        #timeLine{width: 1500px;height: 330px;margin: 30px;border:1px solid; overflow: hidden;position:relative;}
+        .baseLine{position: absolute;height: 50px;border-left: 1px solid;}
+        .baseTxt{position: absolute;top:30px;padding:5px;}
+        .majorLine{position: absolute;top:50px;height:50px;border-left: 1px solid red;}
+        .majorTxt{position: absolute;top:80px;padding:5px;font-size: 12px;}
+        .item_block{width:80px;height:50px; position: absolute;border: 1px solid red;top:30px;background: white;}
+        .item_block_on{
+            background: #f60;z-index:10;
+        }
+        .axis-warp{top:200px;height:200px;border-top:2px solid black;font-size: 12px;}
+    </style>
+
+</head>
+<body>
+
+
+
+<div id="timeLine">
+   
+</div>
+
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="timeline.js"></script>
+<script type="text/javascript" src="axis.js"></script>
+<script type="text/javascript" src="item.js"></script>
+<script>
+
+    var timeline=new Timeline($("#timeLine"));
+    timeline.init();
+    //    t.option={}
+    //    t.data.setDate();
+    //    var axis=new Axis($("#axis"));
+    //    axis.init();
+
+    timeline.addDate( [{
+            "start": new Date(2010,7,23,23,0,0),
+            "content": "test1"
+
+        }, {
+            "start": new Date(2010,7,24,16,0,0),
+            "content": "test2"
+
+        }, {
+            "start": new Date(2010,7,26),
+            "content": "test3"
+
+        }, {
+            "start": new Date(2010,7,28),
+            "content": "test4"
+
+        }, {
+            "start": new Date(2010,7,29),
+            "content": "test5"
+
+        }]
+
+    )
+</script>
+</body>
+</html>
