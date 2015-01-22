@@ -28,19 +28,12 @@
 </div>
 
 <script type="text/javascript" src="jquery.js"></script>
-<script type="text/javascript" src="timeline.js"></script>
-<script type="text/javascript" src="axis.js"></script>
+
 <script type="text/javascript" src="item.js"></script>
-<script>
 
-    var timeline=new Timeline($("#timeLine"));
-    timeline.init();
-    //    t.option={}
-    //    t.data.setDate();
-    //    var axis=new Axis($("#axis"));
-    //    axis.init();
-
-    timeline.addDate([{
+<script type="text/javascript">
+	var items=new Items({
+	"data":[{
             "start": new Date(2010,7,23,23,0,0),
             "content": "test1"
 
@@ -62,7 +55,9 @@
 
         }]
 
-    )
+	});
+
+
 </script>
 </body>
 </html>

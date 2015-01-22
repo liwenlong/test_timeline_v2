@@ -1,10 +1,15 @@
-function Axis(_this) {
+function Axis(options) {
 	// for the Axis
-	this.warp = _this;
-	this.start = this.warp.time.start;
-	this.end = this.warp.time.end;
+
+
+	this.options = {
+		"container": $("#timeLine"),
+		"width": 1500,
+		"basewidth": 30,
+		"start": null,
+		"end": null
+	}
 	this.dom = {
-		"container": _this.dom.iframe,
 		"baseLine": "baseLine",
 		"baseTxt": "baseTxt",
 		"majorLine": "majorLine",
@@ -27,9 +32,28 @@ function Axis(_this) {
 		'DAYS': ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
 		'DAYS_SHORT': ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
 	};
-	this.scale = this.scaleObj.MONTH;
+	this.scale = this.scaleObj.MONTH; //默认值
 	this.step = 1;
 
+	this.init(options);
+
+}
+Axis.prototype.setOptions = function(data) {
+	this.options = $.extend(this.options, data);
+}
+
+Axis.prototype.init = function(options) {
+	this.setOptions(options);
+	if (!this.options.start) {
+		var start = new Date();
+		start.setDate(start.getDate() - 2);
+		var end = new Date();
+		end.setDate(end.getDate() + 2);
+		this.options.start = start;
+		this.options.end = end;
+	}
+	this.applyRange();
+	this.render();
 }
 Axis.prototype.render = function() {
 	var dom = this.dom;
@@ -39,26 +63,29 @@ Axis.prototype.render = function() {
 		dom.baseTxtArr = [];
 		dom.majorLineArr = [];
 		dom.majorTxtArr = [];
-		dom.container.append(dom.frame);
+		this.options.container.append(dom.frame);
 
 	}
 	dom.frame.remove();
 	this.creatLine();
-	dom.container.append(dom.frame);
+	this.options.container.append(dom.frame);
 
 }
-Axis.prototype.short = {
-	'MONTHS': ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-	'MONTHS_SHORT': ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-	'DAYS': ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-	'DAYS_SHORT': ["周日", "周一", "周二", "周三", "周四", "周五", "周六"]
-};
+Axis.prototype.applyRange = function(start, end) {
+	if (start && end) {
+		this.options.start = start;
+		this.options.end = end;
+	}
+	this.pe = (this.options.end - this.options.start) / this.options.width;
 
-
-
+}
+Axis.prototype.setZoom = function(start, end) {
+	this.applyRange(start, end);
+	this.render();
+}
 Axis.prototype.creatLine = function() {
 
-	this.setStep(this.warp.options.basewidth);
+	this.setStep(this.options.basewidth);
 	this.lineStart();
 	this.reWritingNum(); //记刻度尺数字清零
 	var max = 0;
@@ -72,11 +99,8 @@ Axis.prototype.creatLine = function() {
 			this.setMajorTxt();
 		}
 		this.lineNext();
-
-
 	}
 	this.reWriteNum(); //处理多余的元素 
-
 
 };
 Axis.prototype.reWriteNum = function() {
@@ -144,7 +168,7 @@ Axis.prototype.setBaseLine = function() {
 		arr.push(line);
 	}
 	line.css({
-		"left": (this.warp.method.timeToLine(this.lineCurrent) - 1) + "px"
+		"left": (this.timeToLine(this.lineCurrent) - 1) + "px"
 	});
 	this.baseLineNum++;
 };
@@ -167,7 +191,7 @@ Axis.prototype.setBaseTxt = function() {
 
 	line.html(txt);
 	line.css({
-		"left": (this.warp.method.timeToLine(this.lineCurrent)) + "px"
+		"left": (this.timeToLine(this.lineCurrent)) + "px"
 	});
 	this.baseTxtNum++;
 };
@@ -187,7 +211,7 @@ Axis.prototype.setMajorLine = function() {
 		arr.push(line);
 	}
 	line.css({
-		"left": (this.warp.method.timeToLine(this.lineCurrent) - 1) + "px"
+		"left": (this.timeToLine(this.lineCurrent) - 1) + "px"
 	});
 	this.majorLineNum++;
 
@@ -213,7 +237,7 @@ Axis.prototype.setMajorTxt = function() {
 
 	line.html(txt);
 	line.css({
-		"left": (this.warp.method.timeToLine(this.lineCurrent)) + "px"
+		"left": (this.timeToLine(this.lineCurrent)) + "px"
 	});
 	this.majorTxtNum++;
 
@@ -233,7 +257,7 @@ Axis.prototype.formateLineTxt = function() {
 			return this.addZeros(date.getHours(), 2) + ":" + this.addZeros(date.getMinutes(), 2);
 		case this.scaleObj.WEEKDAY:
 			return this.short.DAYS_SHORT[date.getDay()] + ' ' + date.getFullYear() + "." +
-				(date.getMonth()+1) + "." + date.getDate() ;
+				(date.getMonth() + 1) + "." + date.getDate();
 		case this.scaleObj.DAY:
 			return String(date.getDate());
 		case this.scaleObj.MONTH:
@@ -282,7 +306,7 @@ Axis.prototype.formateMajorTxt = function() {
 };
 
 Axis.prototype.lineStart = function() {
-	this.lineCurrent = new Date(this.warp.time.start.valueOf());
+	this.lineCurrent = new Date(this.options.start.valueOf());
 
 	//将当前时间取整
 	this.roundDate(this.lineCurrent);
@@ -291,7 +315,7 @@ Axis.prototype.lineStart = function() {
 };
 Axis.prototype.lineEnd = function() {
 
-	return this.lineCurrent.valueOf() > this.warp.time.end.valueOf();
+	return this.lineCurrent.valueOf() > this.options.end.valueOf();
 };
 Axis.prototype.lineNext = function() {
 	var prev = this.lineCurrent.valueOf();
@@ -453,7 +477,8 @@ Axis.prototype.setStep = function(basewidth) {
 	//根据最小的宽度，换算成时间轴的最小时间，然后根据最小时间所在的范围，得到当前的scal和step
 
 	if (!basewidth) return;
-	var baseTime = this.warp.method.lineToTime(basewidth).valueOf() - this.warp.time.start.valueOf();
+
+	var baseTime = this.lineToTime(basewidth).valueOf() - this.options.start.valueOf();
 	var stepYear = (1000 * 60 * 60 * 24 * 30 * 12);
 	var stepMonth = (1000 * 60 * 60 * 24 * 30);
 	var stepDay = (1000 * 60 * 60 * 24);
@@ -615,3 +640,24 @@ Axis.prototype.addZeros = function(value, len) { //为格式化增加的功能
 	}
 	return str;
 };
+
+
+Axis.prototype.lineToTime = function(line) {
+
+	if (typeof line == 'undefined') {
+		line = 0; //如果没有值，就默认0
+	};
+	var addtime = line * this.pe;
+	return new Date(this.options.start.valueOf() + addtime);
+
+}
+
+
+
+Axis.prototype.timeToLine = function(date) {
+
+	if (typeof date == 'undefined') {
+		date = new Date(); //如果没有值，就默认当前时间
+	}
+	return (date - this.options.start) / this.pe;
+}

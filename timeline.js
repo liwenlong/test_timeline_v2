@@ -3,12 +3,8 @@
    include
      axis items      ----   class
      option  data  method  data addEvent   init  setOptions setDate
-
-
  1. axis
-
  2.items
- 
 
  */
 (function($) {
@@ -22,7 +18,15 @@
             "basewidth": 50,
             "width": 1500,
             "height": 400,
-            "data": []
+            "data": [{
+                    "start": new Date(2015, 1, 15),
+                    "content": "this is content"
+
+                }, {
+                    "start": new Date(2015, 2, 15),
+                    "content": "this is content"
+
+                }]
         }
         this.dom = {
             "container": container, //defalut parent dom
@@ -37,21 +41,12 @@
             "start": null,
             "end": null,
             "pe": null,
-            "data": [{
-                "start": new Date(),
-                "content": "<h3>this is content</h3>"
-
-            }, {
-                "start": new Date(2015, 2, 15),
-                "content": "<h3>this is content</h3>"
-
-            }]
+            "data":null
         };
     }
 
 
     Timeline.prototype.init = function() {
-
         _this = this;
         this.setDate(this.options.data);
         if (!this.dom.iframe) {
@@ -59,10 +54,39 @@
             this.dom.container.append(_this.dom.iframe);
         }
         this.applyRange();
-        this.axis = new Axis(_this);
-        this.items = new Items(_this);
+
+        var axisData={
+            "container": this.dom.iframe,
+            "width": this.options.width,
+            "basewidth": this.options.basewidth,
+            "start":  this.time.start,
+            "end": this.time.end
+        }
+        this.axis = new Axis(axisData);    //创建两个子组件
+
+        var itemDate={
+            "container": this.dom.iframe,
+            "width": this.options.width,
+            "basewidth": this.options.basewidth,
+            "start":  this.time.start,
+            "end": this.time.end,
+            "data":this.time.data
+        }
+        this.items=new Items(itemDate)
+
+       // this.items = new Items(_this);
+        //  this.content = new Content(_this);
+        // this.content.on('select', function (index) {
+        //     this.items.changeFoucs(index);
+        // })
+        // this.items.on('move', function (x) {
+        //     this.items.move(x);
+        // });
+        // this.items.on('select', function(index) {
+        //     this.content.changeIndex(index);
+        // });
         this.render();
-        this.addEvent()
+        this.addEvent();
 
     };
 
@@ -74,13 +98,17 @@
         this.setDate(data);
         this.applyRange();
         this.render();
+       
 
     }
+
     Timeline.prototype.render = function() {
-       
-        this.axis.render();
+        // this.axis.render(start,end);
+        //触发事件
+        this.axis.setZoom(this.time.start,this.time.end);
         // Timeline.item.redner();
-        this.items.render();
+        // this.items.render();
+        this.items.render(this.time.start,this.time.end,this.time.data);
         
     }
     Timeline.prototype.setOptions = function(op) {
@@ -116,10 +144,7 @@
                 date = new Date(); //如果没有值，就默认当前时间
             }
             return (date - _this.time.start) / _this.time.pe;
-
         }
-
-
     }
     Timeline.prototype.setDate = function(data) {
         //set data
@@ -244,8 +269,6 @@
 
 
     };
-
-
     window.Timeline = Timeline;
 
 
