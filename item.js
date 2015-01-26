@@ -59,7 +59,7 @@ Items.prototype.init = function(options) {
 
 Items.prototype.render = function(start,end,data) {
 	this.applyRange(start,end);
-	if (this.options.data != data) {
+	if (data&&this.options.data != data) {
 		this.options.data = data;
 		this.creeatItem();
 	} else{
@@ -72,7 +72,7 @@ Items.prototype.creeatItem = function() {
 	var _this=this;
 	dom.frame.empty();
 	this.item = [];
-	//console.log(this.options);
+	console.log(this.options);
 	for (var i = 0; i < this.options.data.length; i++) {
 		(function() {
 			var item = $('<div class="item_block"></div>');
@@ -119,24 +119,16 @@ Items.prototype.itemOverlap = function() {
 }
 
 Items.prototype.addEvent = function() {
-	//点击事件
-	// var frame=this.dom.frame;
-	// var obj=$("."+this.dom.item_block);
-	// frame.off("click");
-	// obj.on("click",function(event){
-	// 	$(".item_block_on").removeClass("item_block_on");
-	// 	$(this).addClass("item_block_on");
-		
-	//     //@ToDo  其他点击事件处理
-	//     return false;
-	// })
+	
+	
 	var that = this;
     that.dom.frame.on("click", "div", function() {
         var index = that.getIndex(this);
         that.selectIndex(index);
+        that.moveToMiddle(index);
         that.trigger('select', index);
     });
-    
+    //@ToDo  其他点击事件处理
 }
 
 Items.prototype.applyRange = function(start, end) {
@@ -170,7 +162,7 @@ Items.prototype.timeToLine = function(date) {
 
 Items.prototype.selectIndex=function(index){
 	
-	if(index>=this.length||index<0){return}
+	
     $("."+this.dom["item_block_on"]).removeClass(this.dom["item_block_on"]);
 	$("."+this.dom["item_block"]).eq(index).addClass(this.dom["item_block_on"])
 	this.index=index;
@@ -184,6 +176,22 @@ Items.prototype.getIndex=function(obj){
 	}
 	return 0;
 };
+
+Items.prototype.moveToMiddle=function(index){
+	  var left=parseInt(this.item[index].css("left"));
+	  var difX=left-this.options.width/2;
+	  
+	  // var newStar=new Date(this.options.start.valueOf()+difX.valueOf());
+	  // var newEnd=new Date(this.options.end.valueOf()+difX.valueOf());
+	  var newStar=this.lineToTime(difX);
+	  var newEnd=this.lineToTime(this.options.width+difX);
+	  this.trigger("render",newStar,newEnd);
+}
+Items.prototype.chooseIndex=function(index){
+	if(index>=this.length||index<0){return}
+	this.selectIndex(index);
+	this.moveToMiddle(index);
+}
 
 Events.mixTo(Items);
 

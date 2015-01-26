@@ -1,6 +1,4 @@
 function Axis(options) {
-	// for the Axis
-
 
 	this.options = {
 		"container": $("#timeLine"),
@@ -39,6 +37,7 @@ function Axis(options) {
 
 }
 Axis.prototype.setOptions = function(data) {
+	//合并参数
 	this.options = $.extend(this.options, data);
 }
 

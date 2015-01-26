@@ -100,6 +100,7 @@
     Timeline.prototype.render = function() {
         // this.axis.render(start,end);
         //触发事件
+
         this.axis.setZoom(this.time.start, this.time.end);
         // Timeline.item.redner();
         // this.items.render();
@@ -233,13 +234,18 @@
         this.items.on("select", function(index) {
             that.slider.showIndex(index);
         });
+        this.items.on("render",function(start,end){
+            
+            that.applyRange(start, end);
+            that.render();
 
+         })
         that.slider.on("left", function(index) {
-            that.items.selectIndex(index - 1);
+            that.items.chooseIndex(index - 1);
        });
 
         that.slider.on("right", function(index) {
-            that.items.selectIndex(index + 1);
+            that.items.chooseIndex(index + 1);
         });
 
     };
@@ -283,6 +289,8 @@
     };
     window.Timeline = Timeline;
 
-
-
+   //@TODO
+   //1、render和applyRange的统一接口问题，相当于完全重新绘制
+   //2、关于移动的效果，应该增加moveto效果来实现。如果增加动画效果
+   //3、关于move的效果，可以考虑先用left实现，然后最后重绘实现
 })(jQuery)
