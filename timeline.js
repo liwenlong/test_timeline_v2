@@ -19,14 +19,14 @@
             "width": 1500,
             "height": 400,
             "data": [{
-                    "start": new Date(2015, 1, 15),
-                    "content": "this is content"
+                "start": new Date(2015, 1, 15),
+                "content": "this is content"
 
-                }, {
-                    "start": new Date(2015, 2, 15),
-                    "content": "this is content"
+            }, {
+                "start": new Date(2015, 2, 15),
+                "content": "this is content"
 
-                }]
+            }]
         }
         this.dom = {
             "container": container, //defalut parent dom
@@ -41,7 +41,7 @@
             "start": null,
             "end": null,
             "pe": null,
-            "data":null
+            "data": null
         };
     }
 
@@ -55,36 +55,28 @@
         }
         this.applyRange();
 
-        var axisData={
+        var axisData = {
             "container": this.dom.iframe,
             "width": this.options.width,
             "basewidth": this.options.basewidth,
-            "start":  this.time.start,
+            "start": this.time.start,
             "end": this.time.end
         }
-        this.axis = new Axis(axisData);    //创建两个子组件
+        this.axis = new Axis(axisData); //创建两个子组件
 
-        var itemDate={
+        var itemDate = {
             "container": this.dom.iframe,
             "width": this.options.width,
             "basewidth": this.options.basewidth,
-            "start":  this.time.start,
+            "start": this.time.start,
             "end": this.time.end,
-            "data":this.time.data
+            "data": this.time.data
         }
-        this.items=new Items(itemDate)
-
-       // this.items = new Items(_this);
-        //  this.content = new Content(_this);
-        // this.content.on('select', function (index) {
-        //     this.items.changeFoucs(index);
-        // })
-        // this.items.on('move', function (x) {
-        //     this.items.move(x);
-        // });
-        // this.items.on('select', function(index) {
-        //     this.content.changeIndex(index);
-        // });
+        this.items = new Items(itemDate);
+        this.slider = new Slider($("#slider"), {
+            "data": this.time.data
+        });
+        
         this.render();
         this.addEvent();
 
@@ -98,18 +90,21 @@
         this.setDate(data);
         this.applyRange();
         this.render();
-       
+
+        this.slider.init({
+            "data": this.time.data
+        });
 
     }
 
     Timeline.prototype.render = function() {
         // this.axis.render(start,end);
         //触发事件
-        this.axis.setZoom(this.time.start,this.time.end);
+        this.axis.setZoom(this.time.start, this.time.end);
         // Timeline.item.redner();
         // this.items.render();
-        this.items.render(this.time.start,this.time.end,this.time.data);
-        
+        this.items.render(this.time.start, this.time.end, this.time.data);
+
     }
     Timeline.prototype.setOptions = function(op) {
 
@@ -199,14 +194,13 @@
         var startX, endX, startTime, endTime;
         obj.on("mousedown", function(event) {
             var flg = true;
-            var time,newStart,newEnd;
+            var time, newStart, newEnd;
             startX = event.clientX;
             startTime = that.time.start;
             endTime = that.time.end;
             obj.css({
                 "cursor": "move"
             });
-            
             $("body").on("mousemove", function(event) {
                 endX = event.clientX;
                 time = startTime.valueOf() - that.method.lineToTime(endX - startX).valueOf();
@@ -218,10 +212,10 @@
             });
 
             $("body").on("mouseup", function(event) {
-                 that.render();
-                 obj.css({
+                that.render();
+                obj.css({
                     "cursor": "default"
-                 });
+                });
                 $("body").off("mousemove");
                 $("body").off("mouseup");
 
@@ -229,12 +223,30 @@
 
 
         });
+
+        
+
+
+       //item 和 slider事件绑定与触发
+       //用event插件来实现自定义事件触发
+        var that=this;
+        this.items.on("select", function(index) {
+            that.slider.showIndex(index);
+        });
+
+        that.slider.on("left", function(index) {
+            that.items.selectIndex(index - 1);
+       });
+
+        that.slider.on("right", function(index) {
+            that.items.selectIndex(index + 1);
+        });
+
     };
 
     Timeline.prototype.zoom = function(zoomFactor, currenX) {
 
         var time;
-
         if (currenX) {
             time = this.method.lineToTime(currenX);
         } else {
@@ -270,6 +282,7 @@
 
     };
     window.Timeline = Timeline;
+
 
 
 })(jQuery)

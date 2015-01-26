@@ -1,7 +1,8 @@
 function Items(options) {
 	
 	this.dom = {
-		"item_block": "item_block"
+		"item_block": "item_block",
+		"item_block_on":"item_block_on"
 	};
 
 	this.options = {
@@ -15,6 +16,7 @@ function Items(options) {
 	this.item = [];
 	this.init(options);
 	this.index=0;
+	this.length=null;
 }
 
 Items.prototype.setOptions = function(data) {
@@ -50,6 +52,8 @@ Items.prototype.init = function(options) {
 	this.applyRange();
 	this.creeatItem();
 	
+	
+	
 }
 
 
@@ -74,15 +78,19 @@ Items.prototype.creeatItem = function() {
 			var item = $('<div class="item_block"></div>');
 
 			var pos = _this.timeToLine(_this.options.data[i].start);
-			item.html(_this.options.data[i].content);
+			item.html(_this.options.data[i].title);
 			item.css({
 				"left": pos
 			})
+
 			_this.item.push(item);
 			dom.frame.append(item);
 		})(i)
 
 	}
+	this.length=this.options.data.length;
+	this.selectIndex(0);
+
 	this.addEvent();
 
 	// this.container.on('click', '.item', function () {
@@ -112,17 +120,22 @@ Items.prototype.itemOverlap = function() {
 
 Items.prototype.addEvent = function() {
 	//点击事件
-	var frame=this.dom.frame;
-	var obj=$("."+this.dom.item_block);
-	frame.off("click");
-	obj.on("click",function(event){
-		$(".item_block_on").removeClass("item_block_on");
-		$(this).addClass("item_block_on");
+	// var frame=this.dom.frame;
+	// var obj=$("."+this.dom.item_block);
+	// frame.off("click");
+	// obj.on("click",function(event){
+	// 	$(".item_block_on").removeClass("item_block_on");
+	// 	$(this).addClass("item_block_on");
 		
-	    //@ToDo  其他点击事件处理
-	    return false;
-	})
-
+	//     //@ToDo  其他点击事件处理
+	//     return false;
+	// })
+	var that = this;
+    that.dom.frame.on("click", "div", function() {
+        var index = that.getIndex(this);
+        that.selectIndex(index);
+        that.trigger('select', index);
+    });
     
 }
 
@@ -155,6 +168,23 @@ Items.prototype.timeToLine = function(date) {
 	return (date - this.options.start) / this.pe;
 }
 
+Items.prototype.selectIndex=function(index){
+	
+	if(index>=this.length||index<0){return}
+    $("."+this.dom["item_block_on"]).removeClass(this.dom["item_block_on"]);
+	$("."+this.dom["item_block"]).eq(index).addClass(this.dom["item_block_on"])
+	this.index=index;
+};
 
+Items.prototype.getIndex=function(obj){
+	for(var i=0;i<this.item.length;i++){
+		if(obj==this.item[i][0]){     
+			return i; 
+		}
+	}
+	return 0;
+};
+
+Events.mixTo(Items);
 
 
