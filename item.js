@@ -72,7 +72,7 @@ Items.prototype.creeatItem = function() {
 	var _this=this;
 	dom.frame.empty();
 	this.item = [];
-	console.log(this.options);
+	
 	for (var i = 0; i < this.options.data.length; i++) {
 		(function() {
 			var item = $('<div class="item_block"></div>');
