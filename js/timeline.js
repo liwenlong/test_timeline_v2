@@ -1,10 +1,10 @@
 /*
  Timeline
    include
-     axis items      ----   class
-     option  data  method  data addEvent   init  setOptions setDate
- 1. axis
- 2.items
+    
+     1. axis
+     2.items
+     3.slider
 
  */
 (function($) {

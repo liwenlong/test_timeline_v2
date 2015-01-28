@@ -13,10 +13,12 @@ function Items(options) {
 		"end": null,
 		"data":null
 	}
+	this.index=0;
+	this.itemsLength=null;
 	this.item = [];
 	this.init(options);
-	this.index=0;
-	this.length=null;
+	
+	
 }
 
 Items.prototype.setOptions = function(data) {
@@ -72,7 +74,6 @@ Items.prototype.creeatItem = function() {
 	var _this=this;
 	dom.frame.empty();
 	this.item = [];
-	//console.log(this.options);
 	for (var i = 0; i < this.options.data.length; i++) {
 		(function() {
 			var item = $('<div class="item_block"></div>');
@@ -88,15 +89,9 @@ Items.prototype.creeatItem = function() {
 		})(i)
 
 	}
-	this.length=this.options.data.length;
+	this.itemsLength=this.options.data.length;
 	this.selectIndex(0);
-
 	this.addEvent();
-
-	// this.container.on('click', '.item', function () {
-	// 	//ddfdf
-	// 	this.trigger('select', index);
-	// });
 }
 
 Items.prototype.setPosItem = function() {
@@ -120,22 +115,18 @@ Items.prototype.itemOverlap = function() {
 
 Items.prototype.addEvent = function() {
 	//点击事件
-	// var frame=this.dom.frame;
-	// var obj=$("."+this.dom.item_block);
-	// frame.off("click");
-	// obj.on("click",function(event){
-	// 	$(".item_block_on").removeClass("item_block_on");
-	// 	$(this).addClass("item_block_on");
+	
 		
-	//     //@ToDo  其他点击事件处理
-	//     return false;
-	// })
+
+
+	
 	var that = this;
     that.dom.frame.on("click", "div", function() {
         var index = that.getIndex(this);
         that.selectIndex(index);
         that.trigger('select', index);
     });
+   //     //@ToDo  其他点击事件处理
     
 }
 
@@ -169,8 +160,9 @@ Items.prototype.timeToLine = function(date) {
 }
 
 Items.prototype.selectIndex=function(index){
-	
-	if(index>=this.length||index<0){return}
+
+	if(index>=this.itemsLength||index<0){return}
+    
     $("."+this.dom["item_block_on"]).removeClass(this.dom["item_block_on"]);
 	$("."+this.dom["item_block"]).eq(index).addClass(this.dom["item_block_on"])
 	this.index=index;
