@@ -1,8 +1,8 @@
 function Items(options) {
-
+	
 	this.dom = {
 		"item_block": "item_block",
-		"item_block_on": "item_block_on"
+		"item_block_on":"item_block_on"
 	};
 
 	this.options = {
@@ -11,14 +11,14 @@ function Items(options) {
 		"basewidth": 30,
 		"start": null,
 		"end": null,
-		"data": null
+		"data":null
 	}
-	this.index = 0;
-	this.itemsLength = null;
+	this.index=0;
+	this.itemsLength=null;
 	this.item = [];
 	this.init(options);
-
-
+	
+	
 }
 
 Items.prototype.setOptions = function(data) {
@@ -33,50 +33,50 @@ Items.prototype.init = function(options) {
 
 	if (!this.options.start) {
 
-		var start, end;
-		if (this.options.data) {
-			// 对传入的数值进行处理 设置一些额外的边际
-			start = this.options.data[0].start;
-			end = this.options.data[this.options.data.length - 1].start;
-			var differ = (end.valueOf() - start.valueOf()) / 20
-			start = new Date(start.valueOf() - differ);
-			end = new Date(end.valueOf() + differ * 2);
-		} else {
+		var start,end;
+		if(this.options.data){
+			 // 对传入的数值进行处理 设置一些额外的边际
+			 start = this.options.data[0].start;
+             end = this.options.data[this.options.data.length - 1].start;
+             var differ = (end.valueOf() - start.valueOf()) / 20
+             start = new Date(start.valueOf() - differ);
+             end = new Date(end.valueOf() + differ * 2);
+		}else{
 			start = new Date();
-			start.setDate(start.getDate() - 2);
-			end = new Date();
-			end.setDate(end.getDate() + 2);
+		    start.setDate(start.getDate() - 2);
+		    end = new Date();
+		    end.setDate(end.getDate() + 2);
 		}
-
+		 
 		this.options.start = start;
 		this.options.end = end;
 	}
 	this.applyRange();
 	this.creeatItem();
 	this.addEvent();
-
-
+	
+	
 }
 
 
-Items.prototype.render = function(start, end, data) {
-	this.applyRange(start, end);
+Items.prototype.render = function(start,end,data) {
+	this.applyRange(start,end);
 	//将dom的left置为0
-	this.dom.frame.css({
-		"left": "0px"
-	})
-	if (data && this.options.data != data) {
+     this.dom.frame.css({
+            "left":"0px"
+        })
+	if (data&&this.options.data != data) {
 		this.options.data = data;
 		this.creeatItem();
-	} else {
-
+	} else{
+		
 		this.setPosItem();
 	}
 }
 
 Items.prototype.creeatItem = function() {
 	var dom = this.dom;
-	var _this = this;
+	var _this=this;
 	dom.frame.empty();
 	this.item = [];
 	for (var i = 0; i < this.options.data.length; i++) {
@@ -94,16 +94,16 @@ Items.prototype.creeatItem = function() {
 		})(i)
 
 	}
-	this.itemsLength = this.options.data.length;
+	this.itemsLength=this.options.data.length;
 	this.selectIndex(0);
-
+	
 }
 
 Items.prototype.setPosItem = function() {
-	var _this = this;
+	var _this=this;
 	for (var i = 0; i < this.options.data.length; i++) {
 		(function() {
-
+			
 			var pos = _this.timeToLine(_this.options.data[i].start);
 			_this.item[i].css({
 				"left": pos
@@ -115,25 +115,25 @@ Items.prototype.setPosItem = function() {
 
 Items.prototype.itemOverlap = function() {
 	//位置重叠处理
-	////@ToDo
+    ////@ToDo
 }
 
 Items.prototype.addEvent = function() {
 	//点击事件
-
+	
 	var that = this;
-	that.dom.frame.on("click", "div", function() {
-		var index = that.getIndex(this);
-		that.selectIndex(index);
-		//处理当前块太大的情况
-		var left = parseInt($(this).css("left"));
-		var X = left - (0 + that.options.width) / 2;
-		that.slidX(X);
-		that.trigger('select', index);
-		that.trigger('slid', X);
-	});
-	//     //@ToDo  其他点击事件处理
-
+    that.dom.frame.on("click", "div", function() {
+        var index = that.getIndex(this);
+        that.selectIndex(index);
+        //处理当前块太大的情况
+        var left=parseInt($(this).css("left"));
+       	var X=left-(0+that.options.width)/2;
+       	that.slidX(X);
+        that.trigger('select', index);
+        that.trigger('slid', X);
+    });
+   //     //@ToDo  其他点击事件处理
+    
 }
 
 Items.prototype.applyRange = function(start, end) {
@@ -166,37 +166,37 @@ Items.prototype.timeToLine = function(date) {
 	return (date - this.options.start) / this.pe;
 }
 
-Items.prototype.selectIndex = function(index) {
+Items.prototype.selectIndex=function(index){
 
-	if (index >= this.itemsLength || index < 0) {
-		return
-	}
-
-	$("." + this.dom["item_block_on"]).removeClass(this.dom["item_block_on"]);
-	$("." + this.dom["item_block"]).eq(index).addClass(this.dom["item_block_on"])
-	this.index = index;
+	if(index>=this.itemsLength||index<0){return}
+    
+    $("."+this.dom["item_block_on"]).removeClass(this.dom["item_block_on"]);
+	$("."+this.dom["item_block"]).eq(index).addClass(this.dom["item_block_on"])
+	this.index=index;
 };
 
-Items.prototype.getIndex = function(obj) {
-	for (var i = 0; i < this.item.length; i++) {
-		if (obj == this.item[i][0]) {
-			return i;
+Items.prototype.getIndex=function(obj){
+	for(var i=0;i<this.item.length;i++){
+		if(obj==this.item[i][0]){     
+			return i; 
 		}
 	}
 	return 0;
 };
 
-Items.prototype.slidX = function(X) {
-	var left, startx, start, end, endX, that = this;
-	var left = parseInt(this.dom.frame.css("left"));
-	var startX = 0 + X;
-	var endX = this.options.width + X;
-	this.dom.frame.animate({
-		left: left - X
-	}, function() {
-		start = that.lineToTime(startX);
-		end = that.lineToTime(endX);
-		that.render(start, end);
-	})
+Items.prototype.slidX=function(X){
+	var left,startx,start,end,endX,that=this;
+	var left=parseInt(this.dom.frame.css("left"));
+	var startX=0+X;
+	var endX=this.options.width+X;
+    this.dom.frame.animate({
+    	left:left-X
+    },function(){
+    	start=that.lineToTime(startX);
+    	end=that.lineToTime(endX);
+        that.render(start,end);
+    })
 }
 Events.mixTo(Items);
+
+

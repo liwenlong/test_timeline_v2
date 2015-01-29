@@ -5,16 +5,23 @@ function Axis(options) {
 	this.options = {
 		"container": $("#timeLine"),
 		"width": 1500,
-		"basewidth": 30,
+		"basewidth": 50,
 		"start": null,
 		"end": null
 	}
-	this.dom = {
-		"baseLine": "baseLine",
-		"baseTxt": "baseTxt",
-		"majorLine": "majorLine",
-		"majorTxt": "majorTxt"
 
+	this.dom = {
+		"container": $("#timeLine"),
+		"frame": $(".axis-warp"),
+		"before": $(".axis-before"),
+		"curren": $(".axis-curren"),
+		"after": $(".axis-after")
+	}
+	this.dom = {
+		// "baseLine": "baseLine",
+		// "baseTxt": "baseTxt",
+		// "majorLine": "majorLine",
+		// "majorTxt": "majorTxt"
 	};
 	this.scaleObj = {
 		MILLISECOND: 1,
@@ -41,9 +48,7 @@ function Axis(options) {
 Axis.prototype.setOptions = function(data) {
 	this.options = $.extend(this.options, data);
 }
-
-Axis.prototype.init = function(options) {
-	this.setOptions(options);
+Axis.prototype.setDefaultTime = function() {
 	if (!this.options.start) {
 		var start = new Date();
 		start.setDate(start.getDate() - 2);
@@ -52,377 +57,249 @@ Axis.prototype.init = function(options) {
 		this.options.start = start;
 		this.options.end = end;
 	}
-	this.applyRange();
-	this.render();
 }
-Axis.prototype.render = function() {
+Axis.prototype.setDefaultDom = function() {
 	var dom = this.dom;
-	if (!dom.frame) {
-		dom.frame = $("<div class='axis-warp' style='position:relative;left:0px;width:100%;'></div>");
+	this.dom.container = this.options.container || this.dom.container; //传入默认container元素
+	if (!dom.frame) { //创建frame
+		dom.frame = $("<div class='axis-warp' style='position:absolute;left:0px;width:400%;'></div>");
 		dom.baseLineArr = [];
 		dom.baseTxtArr = [];
 		dom.majorLineArr = [];
 		dom.majorTxtArr = [];
-		this.options.container.append(dom.frame);
-
+		this.dom.container.append(dom.frame);
 	}
-	dom.frame.remove();
-	this.creatLine();
-	this.options.container.append(dom.frame);
+}
+Axis.prototype.init = function(options) {
+
+	// 设置默认参数
+	this.setOptions(options);
+	//设置默认时间
+	this.setDefaultTime();
+	//新建dom属性
+	this.setDefaultDom();
+
+	//render
+	this.render();
+	this.addevents();
+
+
+	//this.applyRange();
+	//this.render();
+
+
 
 }
+Axis.prototype.render = function(start, end) {
+	//渲染前面div
+	//渲染中间div
+	//渲染后面div
+	// this.renderMiddle();	
+	// this.renderLeft();
+
+	this.applyRange(start, end);
+	this.dom.frame.empty();
+	this.renderName("axis-before", -this.options.width);
+	this.renderName("axis-curren", 0);
+	this.renderName("axis-after", this.options.width);
+	this.dom.frame.css({
+		"left": -this.options.width
+	})
+
+};
+
+Axis.prototype.addevents = function() {
+	var that = this;
+	var obj = that.dom.frame;
+	var frame = that.dom.frame;
+	var startX, endX, startTime, endTime, startLine, endLine;
+	obj.off();
+	obj.on("mousedown", function(event) {
+
+		startX = event.clientX;
+		startLine = 0;
+		endLine = that.options.width;
+		var frameLeft = parseInt(frame.css("left"));
+		obj.css({
+			"cursor": "move"
+		});
+		$("body").on("mousemove", function(event) {
+
+			endX = event.clientX;
+			endX = endX - startX;
+			frame.css({
+				left: frameLeft + endX
+			})
+			that.trigger('moving', endX);
+
+
+		});
+
+		$("body").on("mouseup", function(event) {
+
+			endX = event.clientX - startX;
+			startLine = startLine - endX;
+			endLine = endLine - endX;
+			startTime = that.lineToTime(startLine);
+			endTime = that.lineToTime(endLine);
+			that.trigger('move', startTime, endTime);
+			obj.css({
+				"cursor": "default"
+			});
+			$("body").off("mousemove");
+			$("body").off("mouseup");
+
+		});
+
+
+	});
+
+	obj.on("mousewheel", function(event) {
+
+		// //@TODO forfox 浏览器不支持这个方法 
+		// var delta = 0;
+		// var currenX;
+		// var orginEv = event.originalEvent;
+		// currenX = event.originalEvent.clientX;
+
+		// if (orginEv.wheelDelta) { // IE/Opera
+		//     delta = orginEv.wheelDelta / 120;
+		// }
+		// if (delta) {
+		//     currenX = currenX - that.dom.frame.offset().left;
+		//     that.zoom(delta, currenX);
+		// }
+
+		/*
+				使用插件，兼容mousewheel  
+				 event.deltaX, event.deltaY, event.deltaFactor
+				 其中，deltaY为1、-1
+            */
+		var currenX = event.originalEvent.clientX;
+		currenX = currenX - that.dom.frame.offset().left;
+		that.zoom(event.deltaY, currenX);
+		return false;
+
+	});
+
+};
+Axis.prototype.zoom = function(zoomFactor, currenX) {
+	var time;
+	if (currenX) {
+		time = this.lineToTime(currenX);
+	} else {
+
+		time = new Date((this.dom.start.valueOf() + this.dom.end.valueOf()) / 2);
+	}
+
+	if (zoomFactor >= 1) {
+		zoomFactor = 0.2;
+	}
+	if (zoomFactor <= -1) {
+		zoomFactor = -0.2;
+	}
+
+	// zoom start Date and end Date relative to the zoomAroundDate
+	var startDiff = (this.options.start.valueOf() - time.valueOf());
+	var endDiff = (this.options.end.valueOf() - time.valueOf());
+	// calculate new dates
+	var newStart = new Date(this.options.start.valueOf() - startDiff * zoomFactor);
+	var newEnd = new Date(this.options.end.valueOf() - endDiff * zoomFactor);
+
+	// only zoom in when interval is larger than minimum interval (to prevent
+	// sliding to left/right when having reached the minimum zoom level)
+	var interval = (newEnd.valueOf() - newStart.valueOf());
+	var zoomMin = 10;
+	var zoomMax = (1000 * 60 * 60 * 24 * 365 * 1000);
+	if (interval >= zoomMin && interval < zoomMax) {
+		this.trigger('zoom', newStart, newEnd);
+		this.applyRange(newStart, newEnd);
+		this.render();
+	}
+};
+
+Axis.prototype.renderName = function(wrapDom, offsetX) {
+	var start, end, startX, endX;
+
+	startX = 0 + offsetX;
+	endX = this.options.width + offsetX;
+	start = this.lineToTime(startX);
+	end = this.lineToTime(endX);
+
+	//obj creatline
+	var obj, majorLineArr, lineCurrent, max = 0;
+	obj = $('<div class="' + wrapDom + '" style="width:' + this.options.width + 'px;height:100%;float:left;position:relative;overflow:hidden"></div>');
+	lineCurrent = this.roundDate(start);
+
+	function drawBaseLine(left) {
+		var line = $("<div class='baseLine'></div>");
+		line.css({
+			"left": (left) + "px"
+		});
+		return line;
+
+	}
+
+	function drawBaseTxt(left, txt) {
+		var line = $("<div class='baseTxt'></div>");
+		line.html(txt);
+		line.css({
+			"left": (left) + "px"
+		});
+		return line;
+	}
+
+	function drawMajorLine(left) {
+		var line = $("<div class='majorLine'></div>");
+		line.css({
+			"left": (left) + "px"
+		});
+		return line;
+
+	}
+
+	function drawMajorTxt(left, txt) {
+		var line = $("<div class='majorTxt'></div>");
+		line.html(txt);
+		line.css({
+			"left": (left) + "px"
+		});
+		return line;
+	}
+
+	while (max < 100 && lineCurrent.valueOf() < end.valueOf()) {
+		//画四条线
+		lineCurrent = this.lineNext(lineCurrent); //设置下一个时间		
+		var left = this.timeToLine(lineCurrent) - offsetX;
+		var txt1 = this.formateLineTxt(lineCurrent);
+		var txt2 = this.formateMajorTxt(lineCurrent);
+		obj.append(drawBaseLine(left));
+		obj.append(drawBaseTxt(left, txt1));
+		if (this.isMajor(lineCurrent)) {
+			obj.append(drawMajorLine(left));
+			obj.append(drawMajorTxt(left, txt2));
+		}
+
+		max++;
+
+	}
+
+	this.dom.frame.append(obj);
+
+};
 Axis.prototype.applyRange = function(start, end) {
 	if (start && end) {
 		this.options.start = start;
 		this.options.end = end;
 	}
-	this.pe = (this.options.end - this.options.start) / this.options.width;
-
+	this.pe = (this.options.end - this.options.start) / this.options.width; //设置pe
+	this.setStep(this.options.basewidth); //设置step和比例
 }
-Axis.prototype.setZoom = function(start, end) {
-	this.applyRange(start, end);
-	this.render();
-}
-Axis.prototype.creatLine = function() {
-
-	this.setStep(this.options.basewidth);
-	this.lineStart();
-	this.reWritingNum(); //记刻度尺数字清零
-	var max = 0;
-	while (!this.lineEnd() && max < 1000) {
-		max++;
-		var isMajor = this.isMajor();
-		this.setBaseLine();
-		this.setBaseTxt();
-		if (isMajor) {
-			this.setMajorLine();
-			this.setMajorTxt();
-		}
-		this.lineNext();
-	}
-	this.reWriteNum(); //处理多余的元素 
-
-};
-Axis.prototype.reWriteNum = function() {
-	var dom = this.dom;
-	var frame = dom.frame;
-	var num;
-	var arr;
-	arr = dom.baseLineArr;
-	num = this.baseLineNum;
-	while (arr.length > num) {
-		var minorText = arr[num];
-		minorText.remove();
-		arr.splice(num, 1);
-	}
 
 
-	arr = dom.baseTxtArr;
-	num = this.baseTxtNum;
-	while (arr.length > num) {
-		var minorText = arr[num];
-		minorText.remove();
-		arr.splice(num, 1);
-	}
-
-	arr = dom.majorLineArr;
-	num = this.majorLineNum;
-	while (arr.length > num) {
-		var minorText = arr[num];
-		minorText.remove();
-		arr.splice(num, 1);
-	}
-
-	arr = dom.majorTxtArr;
-	num = this.majorTxtNum;
-	while (arr.length > num) {
-		var minorText = arr[num];
-		minorText.remove();
-		arr.splice(num, 1);
-	}
-
-
-
-};
-Axis.prototype.reWritingNum = function() {
-	this.baseLineNum = 0;
-	this.baseTxtNum = 0;
-	this.majorLineNum = 0;
-	this.majorTxtNum = 0;
-
-};
-
-
-Axis.prototype.setBaseLine = function() {
-	var dom = this.dom;
-	var frame = dom.frame;
-	var index = this.baseLineNum;
-	var arr = dom.baseLineArr;
-	var line;
-	if (index < arr.length) {
-
-		line = arr[index];
-	} else {
-		line = $("<div class='baseLine'></div>");
-		frame.append(line);
-		arr.push(line);
-	}
-	line.css({
-		"left": (this.timeToLine(this.lineCurrent) - 1) + "px"
-	});
-	this.baseLineNum++;
-};
-Axis.prototype.setBaseTxt = function() {
-
-	var dom = this.dom;
-	var frame = dom.frame;
-	var index = this.baseTxtNum;
-	var arr = dom.baseTxtArr;
-	var line;
-	var txt = this.formateLineTxt(); //得到要填充的内容
-	if (index < arr.length) {
-		line = arr[index];
-	} else {
-		line = $("<div class='baseTxt'></div>");
-		line.html(txt);
-		frame.append(line);
-		arr.push(line);
-	}
-
-	line.html(txt);
-	line.css({
-		"left": (this.timeToLine(this.lineCurrent)) + "px"
-	});
-	this.baseTxtNum++;
-};
-
-Axis.prototype.setMajorLine = function() {
-	var dom = this.dom;
-	var frame = dom.frame;
-	var index = this.majorLineNum;
-
-	var arr = dom.majorLineArr;
-	var line;
-	if (index < arr.length) {
-		line = arr[index];
-	} else {
-		line = $("<div class='majorLine'></div>");
-		frame.append(line);
-		arr.push(line);
-	}
-	line.css({
-		"left": (this.timeToLine(this.lineCurrent) - 1) + "px"
-	});
-	this.majorLineNum++;
-
-};
-Axis.prototype.setMajorTxt = function() {
-
-
-	var dom = this.dom;
-	var frame = dom.frame;
-	var index = this.majorTxtNum;
-	var arr = dom.majorTxtArr;
-	var line;
-	var txt = this.formateMajorTxt(); //得到要填充的内容
-
-	if (index < arr.length) {
-		line = arr[index];
-	} else {
-		line = $("<div class='majorTxt'></div>");
-		line.html(txt);
-		frame.append(line);
-		arr.push(line);
-	}
-
-	line.html(txt);
-	line.css({
-		"left": (this.timeToLine(this.lineCurrent)) + "px"
-	});
-	this.majorTxtNum++;
-
-};
-
-
-Axis.prototype.formateLineTxt = function() {
-	var date = this.lineCurrent;
-	switch (this.scale) {
-		case this.scaleObj.MILLISECOND:
-			return String(date.getMilliseconds());
-		case this.scaleObj.SECOND:
-			return String(date.getSeconds());
-		case this.scaleObj.MINUTE:
-			return this.addZeros(date.getHours(), 2) + ":" + this.addZeros(date.getMinutes(), 2);
-		case this.scaleObj.HOUR:
-			return this.addZeros(date.getHours(), 2) + ":" + this.addZeros(date.getMinutes(), 2);
-		case this.scaleObj.WEEKDAY:
-			return this.short.DAYS_SHORT[date.getDay()] + ' ' + date.getFullYear() + "." +
-				(date.getMonth() + 1) + "." + date.getDate();
-		case this.scaleObj.DAY:
-			return String(date.getDate());
-		case this.scaleObj.MONTH:
-			return this.short.MONTHS_SHORT[date.getMonth()]; // month is zero based
-		case this.scaleObj.YEAR:
-			return String(date.getFullYear());
-		default:
-			return "";
-	}
-
-};
-
-Axis.prototype.formateMajorTxt = function() {
-	var date = this.lineCurrent;
-
-	switch (this.scale) {
-		case this.scaleObj.MILLISECOND:
-			return this.addZeros(date.getHours(), 2) + ":" +
-				this.addZeros(date.getMinutes(), 2) + ":" +
-				this.addZeros(date.getSeconds(), 2);
-		case this.scaleObj.SECOND:
-			return date.getDate() + " " +
-				this.short.MONTHS_SHORT[date.getMonth()] + " " +
-				this.addZeros(date.getHours(), 2) + ":" +
-				this.addZeros(date.getMinutes(), 2);
-		case this.scaleObj.MINUTE:
-			return this.short.DAYS_SHORT[date.getDay()] + " " +
-				date.getFullYear() + "年" +
-				this.short.MONTHS_SHORT[date.getMonth()] + "";
-			// +
-			// date.getDate()+'日 '+
-			// date.getHours()+':00';
-		case this.scaleObj.HOUR:
-			return this.short.DAYS_SHORT[date.getDay()] + " " +
-				date.getFullYear() + "年" +
-				this.short.MONTHS_SHORT[date.getMonth()] + "" + date.getDate() + '日';
-		case this.scaleObj.WEEKDAY:
-		case this.scaleObj.DAY:
-			return date.getFullYear() + "年" + this.short.MONTHS_SHORT[date.getMonth()];
-		case this.scaleObj.MONTH:
-			return String(date.getFullYear()) + "年";
-		default:
-			return "";
-	}
-
-};
-
-Axis.prototype.lineStart = function() {
-	this.lineCurrent = new Date(this.options.start.valueOf());
-
-	//将当前时间取整
-	this.roundDate(this.lineCurrent);
-
-
-};
-Axis.prototype.lineEnd = function() {
-
-	return this.lineCurrent.valueOf() > this.options.end.valueOf();
-};
-Axis.prototype.lineNext = function() {
-	var prev = this.lineCurrent.valueOf();
-	var current = this.lineCurrent.getMonth();
-	var step = this.step;
-	var scal = this.scale;
-
-	// Two cases, needed to prevent issues with switching daylight savings
-	// (end of March and end of October)
-	if (this.lineCurrent.getMonth() < 6) {
-		switch (this.scale) {
-			case this.scaleObj.MILLISECOND:
-
-				this.lineCurrent = new Date(this.lineCurrent.valueOf() + this.step);
-				break;
-			case this.scaleObj.SECOND:
-				this.lineCurrent = new Date(this.lineCurrent.valueOf() + this.step * 1000);
-				break;
-			case this.scaleObj.MINUTE:
-				this.lineCurrent = new Date(this.lineCurrent.valueOf() + this.step * 1000 * 60);
-				break;
-			case this.scaleObj.HOUR:
-				this.lineCurrent = new Date(this.lineCurrent.valueOf() + this.step * 1000 * 60 * 60);
-				// in case of skipping an hour for daylight savings, adjust the hour again (else you get: 0h 5h 9h ... instead of 0h 4h 8h ...)
-				var h = this.lineCurrent.getHours();
-				this.lineCurrent.setHours(h - (h % this.step));
-				break;
-			case this.scaleObj.WEEKDAY: // intentional fall through
-			case this.scaleObj.DAY:
-				this.lineCurrent.setDate(this.lineCurrent.getDate() + this.step);
-				break;
-			case this.scaleObj.MONTH:
-				this.lineCurrent.setMonth(this.lineCurrent.getMonth() + this.step);
-				break;
-			case this.scaleObj.YEAR:
-				this.lineCurrent.setFullYear(this.lineCurrent.getFullYear() + this.step);
-				break;
-			default:
-				break;
-		}
-	} else {
-		switch (this.scale) {
-			case this.scaleObj.MILLISECOND:
-				this.lineCurrent = new Date(this.lineCurrent.valueOf() + this.step);
-				break;
-			case this.scaleObj.SECOND:
-				this.lineCurrent.setSeconds(this.lineCurrent.getSeconds() + this.step);
-				break;
-			case this.scaleObj.MINUTE:
-				this.lineCurrent.setMinutes(this.lineCurrent.getMinutes() + this.step);
-				break;
-			case this.scaleObj.HOUR:
-				this.lineCurrent.setHours(this.lineCurrent.getHours() + this.step);
-				break;
-			case this.scaleObj.WEEKDAY: // intentional fall through
-			case this.scaleObj.DAY:
-				this.lineCurrent.setDate(this.lineCurrent.getDate() + this.step);
-				break;
-			case this.scaleObj.MONTH:
-				this.lineCurrent.setMonth(this.lineCurrent.getMonth() + this.step);
-				break;
-			case this.scaleObj.YEAR:
-				this.lineCurrent.setFullYear(this.lineCurrent.getFullYear() + this.step);
-				break;
-			default:
-				break;
-		}
-	}
-
-	if (this.step != 1) {
-		// round down to the correct major value
-		switch (this.scale) {
-			case this.scaleObj.MILLISECOND:
-				if (this.lineCurrent.getMilliseconds() < this.step) this.lineCurrent.setMilliseconds(0);
-				break;
-			case this.scaleObj.SECOND:
-				if (this.lineCurrent.getSeconds() < this.step) this.lineCurrent.setSeconds(0);
-				break;
-			case this.scaleObj.MINUTE:
-				if (this.lineCurrent.getMinutes() < this.step) this.lineCurrent.setMinutes(0);
-				break;
-			case this.scaleObj.HOUR:
-				if (this.lineCurrent.getHours() < this.step) this.lineCurrent.setHours(0);
-				break;
-			case this.scaleObj.WEEKDAY: // intentional fall through
-			case this.scaleObj.DAY:
-				if (this.lineCurrent.getDate() < this.step + 1) this.lineCurrent.setDate(1);
-				break;
-			case this.scaleObj.MONTH:
-				if (this.lineCurrent.getMonth() < this.step) this.lineCurrent.setMonth(0);
-				break;
-			case this.scaleObj.YEAR:
-				break; // nothing to do for year
-			default:
-				break;
-		}
-	}
-
-	// safety mechanism: if current time is still unchanged, move to the end
-	if (this.lineCurrent.valueOf() == prev) {
-		this.lineCurrent = new Date(this.warp.time.valueOf());
-	}
-
-};
 
 Axis.prototype.roundDate = function(time) {
-	if (!time) time = this.lineCurrent;
+
 	switch (this.scale) {
 		case this.scaleObj.YEAR:
 			time.setFullYear(this.step * Math.floor(time.getFullYear() / this.step));
@@ -471,8 +348,160 @@ Axis.prototype.roundDate = function(time) {
 		}
 	}
 
+	return time;
+
+}
+Axis.prototype.lineNext = function(time) {
+	var prev = time.valueOf();
+	var current = time.getMonth();
+	var step = this.step;
+	var scal = this.scale;
+
+	// Two cases, needed to prevent issues with switching daylight savings
+	// (end of March and end of October)
+	if (time.getMonth() < 6) {
+		switch (this.scale) {
+			case this.scaleObj.MILLISECOND:
+
+				time = new Date(time.valueOf() + this.step);
+				break;
+			case this.scaleObj.SECOND:
+				time = new Date(time.valueOf() + this.step * 1000);
+				break;
+			case this.scaleObj.MINUTE:
+				time = new Date(time.valueOf() + this.step * 1000 * 60);
+				break;
+			case this.scaleObj.HOUR:
+				time = new Date(time.valueOf() + this.step * 1000 * 60 * 60);
+				// in case of skipping an hour for daylight savings, adjust the hour again (else you get: 0h 5h 9h ... instead of 0h 4h 8h ...)
+				var h = time.getHours();
+				time.setHours(h - (h % this.step));
+				break;
+			case this.scaleObj.WEEKDAY: // intentional fall through
+			case this.scaleObj.DAY:
+				time.setDate(time.getDate() + this.step);
+				break;
+			case this.scaleObj.MONTH:
+				time.setMonth(time.getMonth() + this.step);
+				break;
+			case this.scaleObj.YEAR:
+				time.setFullYear(time.getFullYear() + this.step);
+				break;
+			default:
+				break;
+		}
+	} else {
+		switch (this.scale) {
+			case this.scaleObj.MILLISECOND:
+				time = new Date(time.valueOf() + this.step);
+				break;
+			case this.scaleObj.SECOND:
+				time.setSeconds(time.getSeconds() + this.step);
+				break;
+			case this.scaleObj.MINUTE:
+				time.setMinutes(time.getMinutes() + this.step);
+				break;
+			case this.scaleObj.HOUR:
+				time.setHours(time.getHours() + this.step);
+				break;
+			case this.scaleObj.WEEKDAY: // intentional fall through
+			case this.scaleObj.DAY:
+				time.setDate(time.getDate() + this.step);
+				break;
+			case this.scaleObj.MONTH:
+				time.setMonth(time.getMonth() + this.step);
+				break;
+			case this.scaleObj.YEAR:
+				time.setFullYear(time.getFullYear() + this.step);
+				break;
+			default:
+				break;
+		}
+	}
+
+	if (this.step != 1) {
+		// round down to the correct major value
+		switch (this.scale) {
+			case this.scaleObj.MILLISECOND:
+				if (time.getMilliseconds() < this.step) time.setMilliseconds(0);
+				break;
+			case this.scaleObj.SECOND:
+				if (time.getSeconds() < this.step) time.setSeconds(0);
+				break;
+			case this.scaleObj.MINUTE:
+				if (time.getMinutes() < this.step) time.setMinutes(0);
+				break;
+			case this.scaleObj.HOUR:
+				if (time.getHours() < this.step) time.setHours(0);
+				break;
+			case this.scaleObj.WEEKDAY: // intentional fall through
+			case this.scaleObj.DAY:
+				if (time.getDate() < this.step + 1) time.setDate(1);
+				break;
+			case this.scaleObj.MONTH:
+				if (time.getMonth() < this.step) time.setMonth(0);
+				break;
+			case this.scaleObj.YEAR:
+				break; // nothing to do for year
+			default:
+				break;
+		}
+	}
+
+	// safety mechanism: if current time is still unchanged, move to the end
+	// if (time.valueOf() == prev) {
+	// 	time = new Date(this.warp.time.valueOf());
+	// }
+
+	return time;
 
 };
+
+Axis.prototype.slidX = function(X) {
+	var left, startx, start, end, endX, that = this;
+	var left = parseInt(this.dom.frame.css("left"));
+	var startX = 0 + X;
+	var endX = this.options.width + X;
+	this.dom.frame.animate({
+		left: left - X
+	}, function() {
+		start = that.lineToTime(startX);
+		end = that.lineToTime(endX);
+		that.render(start, end);
+	})
+}
+
+//method 日期和轴转换
+
+Axis.prototype.addZeros = function(value, len) { //为格式化增加的功能
+	var str = "" + value;
+	while (str.length < len) {
+		str = "0" + str;
+	}
+	return str;
+};
+
+
+Axis.prototype.lineToTime = function(line) {
+
+	if (typeof line == 'undefined') {
+		line = 0; //如果没有值，就默认0
+	};
+	var addtime = line * this.pe;
+	return new Date(this.options.start.valueOf() + addtime);
+
+}
+
+
+
+Axis.prototype.timeToLine = function(date) {
+
+	if (typeof date == 'undefined') {
+		date = new Date(); //如果没有值，就默认当前时间
+	}
+	return (date - this.options.start) / this.pe;
+}
+
 Axis.prototype.setStep = function(basewidth) {
 	//根据最小的宽度，换算成时间轴的最小时间，然后根据最小时间所在的范围，得到当前的scal和step
 
@@ -606,24 +635,83 @@ Axis.prototype.setStep = function(basewidth) {
 
 };
 
-
-
-Axis.prototype.isMajor = function() {
+Axis.prototype.formateLineTxt = function(currenTime) {
+	var date = currenTime;
 	switch (this.scale) {
 		case this.scaleObj.MILLISECOND:
-			return (this.lineCurrent.getMilliseconds() == 0);
+			return String(date.getMilliseconds());
 		case this.scaleObj.SECOND:
-			return (this.lineCurrent.getSeconds() == 0);
+			return String(date.getSeconds());
 		case this.scaleObj.MINUTE:
-			return (this.lineCurrent.getMinutes() == 0);
+			return this.addZeros(date.getHours(), 2) + ":" + this.addZeros(date.getMinutes(), 2);
+		case this.scaleObj.HOUR:
+			return this.addZeros(date.getHours(), 2) + ":" + this.addZeros(date.getMinutes(), 2);
+		case this.scaleObj.WEEKDAY:
+			return this.short.DAYS_SHORT[date.getDay()] + ' ' + date.getFullYear() + "." +
+				(date.getMonth() + 1) + "." + date.getDate();
+		case this.scaleObj.DAY:
+			return String(date.getDate());
+		case this.scaleObj.MONTH:
+			return this.short.MONTHS_SHORT[date.getMonth()]; // month is zero based
+		case this.scaleObj.YEAR:
+			return String(date.getFullYear());
+		default:
+			return "";
+	}
+
+};
+
+Axis.prototype.formateMajorTxt = function(currenTime) {
+	var date = currenTime;
+
+	switch (this.scale) {
+		case this.scaleObj.MILLISECOND:
+			return this.addZeros(date.getHours(), 2) + ":" +
+				this.addZeros(date.getMinutes(), 2) + ":" +
+				this.addZeros(date.getSeconds(), 2);
+		case this.scaleObj.SECOND:
+			return date.getDate() + " " +
+				this.short.MONTHS_SHORT[date.getMonth()] + " " +
+				this.addZeros(date.getHours(), 2) + ":" +
+				this.addZeros(date.getMinutes(), 2);
+		case this.scaleObj.MINUTE:
+			return this.short.DAYS_SHORT[date.getDay()] + " " +
+				date.getFullYear() + "年" +
+				this.short.MONTHS_SHORT[date.getMonth()] + "";
+			// +
+			// date.getDate()+'日 '+
+			// date.getHours()+':00';
+		case this.scaleObj.HOUR:
+			return this.short.DAYS_SHORT[date.getDay()] + " " +
+				date.getFullYear() + "年" +
+				this.short.MONTHS_SHORT[date.getMonth()] + "" + date.getDate() + '日';
+		case this.scaleObj.WEEKDAY:
+		case this.scaleObj.DAY:
+			return date.getFullYear() + "年" + this.short.MONTHS_SHORT[date.getMonth()];
+		case this.scaleObj.MONTH:
+			return String(date.getFullYear()) + "年";
+		default:
+			return "";
+	}
+
+};
+
+Axis.prototype.isMajor = function(currenTime) {
+	switch (this.scale) {
+		case this.scaleObj.MILLISECOND:
+			return (currenTime.getMilliseconds() == 0);
+		case this.scaleObj.SECOND:
+			return (currenTime.getSeconds() == 0);
+		case this.scaleObj.MINUTE:
+			return (currenTime.getMinutes() == 0);
 			// Note: this is no bug. Major label is equal for both minute and hour scale
 		case this.scaleObj.HOUR:
-			return (this.lineCurrent.getHours() == 0);
+			return (currenTime.getHours() == 0);
 		case this.scaleObj.WEEKDAY: // intentional fall through
 		case this.scaleObj.DAY:
-			return (this.lineCurrent.getDate() == 1);
+			return (currenTime.getDate() == 1);
 		case this.scaleObj.MONTH:
-			return (this.lineCurrent.getMonth() == 0);
+			return (currenTime.getMonth() == 0);
 		case this.scaleObj.YEAR:
 			return false;
 		default:
@@ -631,33 +719,4 @@ Axis.prototype.isMajor = function() {
 	}
 };
 
-//method 日期和轴转换
-
-Axis.prototype.addZeros = function(value, len) { //为格式化增加的功能
-	var str = "" + value;
-	while (str.length < len) {
-		str = "0" + str;
-	}
-	return str;
-};
-
-
-Axis.prototype.lineToTime = function(line) {
-
-	if (typeof line == 'undefined') {
-		line = 0; //如果没有值，就默认0
-	};
-	var addtime = line * this.pe;
-	return new Date(this.options.start.valueOf() + addtime);
-
-}
-
-
-
-Axis.prototype.timeToLine = function(date) {
-
-	if (typeof date == 'undefined') {
-		date = new Date(); //如果没有值，就默认当前时间
-	}
-	return (date - this.options.start) / this.pe;
-}
+Events.mixTo(Axis);

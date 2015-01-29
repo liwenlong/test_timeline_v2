@@ -5,7 +5,10 @@
      1. axis
      2.items
      3.slider
-
+   add:
+      1、新增缩放按钮
+      2、将时间start、end放入options
+      3、新增reset,全局存放初始的开始时间和结束时间
  */
 (function($) {
     var _this; //set to Timeline this 
@@ -26,7 +29,13 @@
                 "start": new Date(2015, 2, 15),
                 "content": "this is content"
 
-            }]
+            }],
+            "reset": $("#reset"),
+            "big": $("#big"),
+            "small": $("#small"),
+            "start": null,
+            "end": null,
+            "pe": null
         }
         this.dom = {
             "container": container, //defalut parent dom
@@ -35,58 +44,58 @@
             "item": "items",
             "current": "current"
         };
-
+        this.resetDate = {};
         this.setOptions(options);
-        this.time = {
-            "start": null,
-            "end": null,
-            "pe": null,
-            "data": null
-        };
+        // this.options = {
+        //     "start": null,
+        //     "end": null,
+        //     "pe": null,
+        //     "data": null
+        // };
     }
 
 
     Timeline.prototype.init = function() {
         _this = this;
-        this.setDate(this.options.data);
         if (!this.dom.frame) {
             this.dom.frame = $('<div style="position:relative;width:200%;"></div>');
             this.dom.container.append(_this.dom.frame);
         }
-        this.setDomCss();
+        this.setDate(this.options.data);
+        this.setDomCss(); //设置dom的css
         this.applyRange();
 
-         var itemDate = {
+        var itemDate = {
             "container": this.dom.frame,
             "width": this.options.width,
             "basewidth": this.options.basewidth,
-            "start": this.time.start,
-            "end": this.time.end,
-            "data": this.time.data
+            "start": this.options.start,
+            "end": this.options.end,
+            "data": this.options.data
         }
         this.items = new Items(itemDate);
         var axisData = {
             "container": this.dom.frame,
             "width": this.options.width,
             "basewidth": this.options.basewidth,
-            "start": this.time.start,
-            "end": this.time.end
+            "start": this.options.start,
+            "end": this.options.end
         }
         this.axis = new Axis(axisData); //创建两个子组件
-        
-       
+
+
         this.slider = new Slider($("#slider"), {
-            "data": this.time.data
+            "data": this.options.data
         });
-        
+
         this.render();
         this.addEvent();
 
     };
     Timeline.prototype.setDomCss = function() {
         this.dom.container.css({
-            "width":this.options.width,
-            "height":this.options.height
+            "width": this.options.width,
+            "height": this.options.height
         })
 
     }
@@ -94,25 +103,25 @@
         if (!data) {
             return;
         }
-        this.time.data = data;
+        this.options.data = data;
         this.setDate(data);
         this.applyRange();
         this.render();
 
         this.slider.init({
-            "data": this.time.data
+            "data": this.options.data
         });
 
     }
 
     Timeline.prototype.render = function() {
         // this.axis.render(start,end);
-   
+
         //触发事件
-        this.axis.render(this.time.start,this.time.end);
+        this.axis.render(this.options.start, this.options.end);
         // Timeline.item.redner();
         // this.items.render();
-        this.items.render(this.time.start, this.time.end, this.time.data);
+        this.items.render(this.options.start, this.options.end, this.options.data);
 
     }
     Timeline.prototype.setOptions = function(op) {
@@ -123,7 +132,7 @@
     }
 
     Timeline.prototype.applyRange = function(start, end) {
-        var time = this.time;
+        var time = this.options;
         if (start && end) {
             time.start = start;
             time.end = end;
@@ -138,8 +147,8 @@
             if (typeof line == 'undefined') {
                 line = 0; //如果没有值，就默认0
             };
-            var addtime = line * _this.time.pe;
-            return new Date(_this.time.start.valueOf() + addtime);
+            var addtime = line * _this.options.pe;
+            return new Date(_this.options.start.valueOf() + addtime);
 
         },
         timeToLine: function(date) {
@@ -147,7 +156,7 @@
             if (typeof date == 'undefined') {
                 date = new Date(); //如果没有值，就默认当前时间
             }
-            return (date - _this.time.start) / _this.time.pe;
+            return (date - _this.options.start) / _this.options.pe;
         }
     }
     Timeline.prototype.setDate = function(data) {
@@ -161,7 +170,7 @@
             var differ = (end.valueOf() - start.valueOf()) / 20
             start = new Date(start.valueOf() - differ);
             end = new Date(end.valueOf() + differ * 2);
-            this.time.data = data;
+            this.options.data = data;
         } else {
             //如果数据不正确  默认值
             start = new Date();
@@ -171,11 +180,22 @@
         }
 
 
-
-        this.time.start = start;
-        this.time.end = end;
+        this.options.start = start;
+        this.options.end = end;
+        this.resetDate = {
+            "start": start,
+            "end": end
+        }
 
     }
+    Timeline.prototype.reset = function() {
+        this.options.start = this.resetDate.start;
+        this.options.end = this.resetDate.end;
+        this.applyRange();
+        this.render();
+    };
+
+
 
     Timeline.prototype.addEvent = function() {
 
@@ -183,76 +203,25 @@
         var obj = this.dom.container;
         var left = obj.offset().left;
 
-        // obj.on("mousewheel", function(event) {
-        //     //@TODO forfox 浏览器不支持这个方法 
-
-        //     var delta = 0;
-        //     var currenX;
-        //     var orginEv = event.originalEvent;
-        //     currenX = event.originalEvent.clientX;
-
-        //     if (orginEv.wheelDelta) { // IE/Opera
-        //         delta = orginEv.wheelDelta / 120;
-        //     }
-        //     if (delta) {
-        //         currenX = currenX - left;
-        //         that.zoom(delta, currenX);
-        //     }
-
-        // });
-        // var startX, endX, startTime, endTime;
-        // obj.on("mousedown", function(event) {
-        //     var flg = true;
-        //     var time, newStart, newEnd;
-        //     startX = event.clientX;
-        //     startTime = that.time.start;
-        //     endTime = that.time.end;
-        //     obj.css({
-        //         "cursor": "move"
-        //     });
-        //     $("body").on("mousemove", function(event) {
-        //         endX = event.clientX;
-        //         time = startTime.valueOf() - that.method.lineToTime(endX - startX).valueOf();
-        //         newStart = new Date(startTime.valueOf() + time);
-        //         newEnd = new Date(endTime.valueOf() + time);
-        //         that.applyRange(newStart, newEnd);
-        //         that.render();
-
-        //     });
-
-        //     $("body").on("mouseup", function(event) {
-        //         that.render();
-        //         obj.css({
-        //             "cursor": "default"
-        //         });
-        //         $("body").off("mousemove");
-        //         $("body").off("mouseup");
-
-        //     });
 
 
-        // });
+        //item 和 slider事件绑定与触发
+        //用event插件来实现自定义事件触发
+        var that = this;
 
-        
 
-
-       //item 和 slider事件绑定与触发
-       //用event插件来实现自定义事件触发
-        var that=this;
-
-        
         this.axis.on("moving", function(moveX) {
-             that.items.dom.frame.css({
-               "left":moveX
+            that.items.dom.frame.css({
+                "left": moveX
             });
         });
-        this.axis.on("move", function(start,end) {
-            that.applyRange(start,end);
-            that.render(start,end);
+        this.axis.on("move", function(start, end) {
+            that.applyRange(start, end);
+            that.render(start, end);
         });
-        this.axis.on("zoom", function(start,end) {
-            that.applyRange(start,end);
-            that.render(start,end);
+        this.axis.on("zoom", function(start, end) {
+            that.applyRange(start, end);
+            that.render(start, end);
         });
 
         this.items.on("select", function(index) {
@@ -264,11 +233,24 @@
 
         that.slider.on("left", function(index) {
             that.items.selectIndex(index - 1);
-       });
+        });
 
         that.slider.on("right", function(index) {
             that.items.selectIndex(index + 1);
         });
+
+        //按钮缩放  复原
+        that.options.reset.on("click", function() {
+            that.reset();
+        })
+        that.options.big.on("click", function() {
+
+            that.zoom(1);
+        })
+        that.options.small.on("click", function() {
+
+            that.zoom(-1);
+        })
 
 
     };
@@ -280,7 +262,7 @@
             time = this.method.lineToTime(currenX);
         } else {
 
-            time = new Date((this.time.start.valueOf() + this.time.end.valueOf()) / 2);
+            time = new Date((this.options.start.valueOf() + this.options.end.valueOf()) / 2);
         }
 
         if (zoomFactor >= 1) {
@@ -291,11 +273,11 @@
         }
 
         // zoom start Date and end Date relative to the zoomAroundDate
-        var startDiff = (this.time.start.valueOf() - time);
-        var endDiff = (this.time.end.valueOf() - time);
+        var startDiff = (this.options.start.valueOf() - time);
+        var endDiff = (this.options.end.valueOf() - time);
         // calculate new dates
-        var newStart = new Date(this.time.start.valueOf() - startDiff * zoomFactor);
-        var newEnd = new Date(this.time.end.valueOf() - endDiff * zoomFactor);
+        var newStart = new Date(this.options.start.valueOf() - startDiff * zoomFactor);
+        var newEnd = new Date(this.options.end.valueOf() - endDiff * zoomFactor);
 
         // only zoom in when interval is larger than minimum interval (to prevent
         // sliding to left/right when having reached the minimum zoom level)
