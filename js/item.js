@@ -28,7 +28,7 @@ Items.prototype.setOptions = function(data) {
 Items.prototype.init = function(options) {
 	this.setOptions(options);
 	var dom = this.dom;
-	dom.frame = $("<div class='items-warp' style='position:relative;left:0px;top:0px;width:100%;'></div>");
+	dom.frame = $("<div class='items-warp' style='position:absolute;left:0px;width:100%;'></div>");
 	this.options.container.append(dom.frame);
 
 	if (!this.options.start) {
@@ -53,7 +53,7 @@ Items.prototype.init = function(options) {
 	}
 	this.applyRange();
 	this.creeatItem();
-	
+	this.addEvent();
 	
 	
 }
@@ -61,10 +61,15 @@ Items.prototype.init = function(options) {
 
 Items.prototype.render = function(start,end,data) {
 	this.applyRange(start,end);
-	if (this.options.data != data) {
+	//将dom的left置为0
+     this.dom.frame.css({
+            "left":"0px"
+        })
+	if (data&&this.options.data != data) {
 		this.options.data = data;
 		this.creeatItem();
 	} else{
+		
 		this.setPosItem();
 	}
 }
@@ -91,7 +96,7 @@ Items.prototype.creeatItem = function() {
 	}
 	this.itemsLength=this.options.data.length;
 	this.selectIndex(0);
-	this.addEvent();
+	
 }
 
 Items.prototype.setPosItem = function() {
@@ -116,21 +121,23 @@ Items.prototype.itemOverlap = function() {
 Items.prototype.addEvent = function() {
 	//点击事件
 	
-		
-
-
-	
 	var that = this;
     that.dom.frame.on("click", "div", function() {
         var index = that.getIndex(this);
         that.selectIndex(index);
+        //处理当前块太大的情况
+        var left=parseInt($(this).css("left"));
+       	var X=left-(0+that.options.width)/2;
+       	that.slidX(X);
         that.trigger('select', index);
+        that.trigger('slid', X);
     });
    //     //@ToDo  其他点击事件处理
     
 }
 
 Items.prototype.applyRange = function(start, end) {
+
 	if (start && end) {
 		this.options.start = start;
 		this.options.end = end;
@@ -177,6 +184,19 @@ Items.prototype.getIndex=function(obj){
 	return 0;
 };
 
+Items.prototype.slidX=function(X){
+	var left,startx,start,end,endX,that=this;
+	var left=parseInt(this.dom.frame.css("left"));
+	var startX=0+X;
+	var endX=this.options.width+X;
+    this.dom.frame.animate({
+    	left:left-X
+    },function(){
+    	start=that.lineToTime(startX);
+    	end=that.lineToTime(endX);
+        that.render(start,end);
+    })
+}
 Events.mixTo(Items);
 
 
