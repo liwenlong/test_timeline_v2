@@ -1,23 +1,31 @@
+::selection
+{
+background: none;
+}
+::-moz-selection
+{
+background: none;
+}
+#timeLine{width: 1500px;height: 330px;margin: 30px;border:1px solid; overflow: hidden;position:relative;}
 
-        #timeLine{width: 1500px;height: 330px;margin: 30px;border:1px solid; overflow: hidden;position:relative;}
-        .baseLine{position: absolute;height: 50px;border-left: 1px solid;}
-        .baseTxt{position: absolute;top:30px;padding:5px;}
-        .majorLine{position: absolute;top:50px;height:50px;border-left: 1px solid red;}
-        .majorTxt{position: absolute;top:80px;padding:5px;font-size: 12px;}
+.baseLine{position: absolute;height: 50px;border-left: 1px solid;}
+.baseTxt{position: absolute;top:30px;padding:5px;}
+.majorLine{position: absolute;top:50px;height:50px;border-left: 1px solid red;}
+.majorTxt{position: absolute;top:80px;padding:5px;font-size: 12px;}
 
-        .item_block{width:80px;height:50px; position: absolute;border: 1px solid red;top:30px;background: white;cursor: pointer;}
-        .item_block_on{
-            background: #f60;z-index:10;
-        }
-        .items-warp{top:10px;height: 150px;}
-        .axis-warp{top:180px;height:120px;border-top:2px solid black;font-size: 12px;}
-        
-        /*
-        slider
-        */
+.item_block{width:80px;height:50px; position: absolute;border: 1px solid red;top:30px;background: white;cursor: pointer;}
+.item_block_on{
+    background: #f60;z-index:10;
+}
+.items-warp{top:10px;height: 150px;}
+.axis-warp{top:180px;height:120px;border-top:2px solid black;font-size: 12px;}
 
-         #slider{width: 1000px;height: 300px;overflow: hidden;position: relative;margin: 50px;margin-left:250px;}
-        .slider-content{width: 100%;}
-        .slider-content li{width: 1000px;height: 300px;display: inline-block;text-align: center;}
-       .leftBar{width: 50px;height: 100px;background: yellow;left:40px;top:100px;position: absolute;color:red;cursor: pointer;}
-       .rightBar{width: 50px;height: 100px;background: yellow;right:0px;top:100px;position: absolute;color:red;cursor: pointer;}
+/*
+slider
+*/
+
+ #slider{width: 1000px;height: 300px;overflow: hidden;position: relative;margin: 50px;margin-left:250px;}
+.slider-content{width: 100%;}
+.slider-content li{width: 1000px;height: 300px;display: inline-block;text-align: center;}
+.leftBar{width: 50px;height: 100px;background: yellow;left:40px;top:100px;position: absolute;color:red;cursor: pointer;}
+.rightBar{width: 50px;height: 100px;background: yellow;right:0px;top:100px;position: absolute;color:red;cursor: pointer;}

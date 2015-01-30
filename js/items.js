@@ -1,9 +1,6 @@
 function Items(options) {
-	
-	this.dom = {
-		"item_block": "item_block",
-		"item_block_on":"item_block_on"
-	};
+
+
 
 	this.options = {
 		"container": $("#timeLine"),
@@ -11,78 +8,96 @@ function Items(options) {
 		"basewidth": 30,
 		"start": null,
 		"end": null,
-		"data":null
+		"data": null
 	}
-	this.index=0;
-	this.itemsLength=null;
+	this.dom = {
+		"item_block": "item_block",
+		"item_block_on": "item_block_on"
+	};
+	this.index = 0;
+	this.itemsLength = null;
 	this.item = [];
 	this.init(options);
-	
-	
 }
 
 Items.prototype.setOptions = function(data) {
 	this.options = $.extend(this.options, data);
 }
 
+
+//init 初始化  
 Items.prototype.init = function(options) {
 	this.setOptions(options);
 	var dom = this.dom;
 	dom.frame = $("<div class='items-warp' style='position:absolute;left:0px;width:100%;'></div>");
 	this.options.container.append(dom.frame);
-
 	if (!this.options.start) {
-
-		var start,end;
-		if(this.options.data){
-			 // 对传入的数值进行处理 设置一些额外的边际
-			 start = this.options.data[0].start;
-             end = this.options.data[this.options.data.length - 1].start;
-             var differ = (end.valueOf() - start.valueOf()) / 20
-             start = new Date(start.valueOf() - differ);
-             end = new Date(end.valueOf() + differ * 2);
-		}else{
+		var start, end;
+		if (this.options.data) {
+			// 对传入的数值进行处理 设置一些额外的边际
+			start = this.options.data[0].start;
+			end = this.options.data[this.options.data.length - 1].start;
+			var differ = (end.valueOf() - start.valueOf()) / 20
+			start = new Date(start.valueOf() - differ);
+			end = new Date(end.valueOf() + differ * 2);
+		} else {
 			start = new Date();
-		    start.setDate(start.getDate() - 2);
-		    end = new Date();
-		    end.setDate(end.getDate() + 2);
+			start.setDate(start.getDate() - 2);
+			end = new Date();
+			end.setDate(end.getDate() + 2);
 		}
-		 
+
 		this.options.start = start;
 		this.options.end = end;
 	}
+	
 	this.applyRange();
 	this.creeatItem();
+	
 	this.addEvent();
-	
-	
-}
 
 
-Items.prototype.render = function(start,end,data) {
-	this.applyRange(start,end);
-	//将dom的left置为0
-     this.dom.frame.css({
-            "left":"0px"
-        })
-	if (data&&this.options.data != data) {
+};
+
+
+
+//重绘信息块
+//start, end  起始时间
+//data  信息块的数据
+Items.prototype.render = function(start, end, data) {
+	this.applyRange(start, end);
+	//将dom的left置为0  为了解决在模拟拖拽时候，left被改动，在渲染的时候需要重置一下
+	this.dom.frame.css({
+		"left": "0px"
+	})
+	if (data && this.options.data != data) {
 		this.options.data = data;
 		this.creeatItem();
-	} else{
-		
+	} else {
 		this.setPosItem();
 	}
-}
+};
 
+//applyRange  设置时间轴的范围，以确定事件块的位置
+Items.prototype.applyRange = function(start, end) {
+
+	if (start && end) {
+		this.options.start = start;
+		this.options.end = end;
+	}
+	this.ratio = (this.options.end - this.options.start) / this.options.width; //ratio 比例系数
+
+};
+//creeatItem  创建信息块并设置位置
 Items.prototype.creeatItem = function() {
+
 	var dom = this.dom;
-	var _this=this;
+	var _this = this;
 	dom.frame.empty();
 	this.item = [];
 	for (var i = 0; i < this.options.data.length; i++) {
 		(function() {
 			var item = $('<div class="item_block"></div>');
-
 			var pos = _this.timeToLine(_this.options.data[i].start);
 			item.html(_this.options.data[i].title);
 			item.css({
@@ -94,16 +109,17 @@ Items.prototype.creeatItem = function() {
 		})(i)
 
 	}
-	this.itemsLength=this.options.data.length;
+	this.itemsLength = this.options.data.length;
 	this.selectIndex(0);
-	
-}
 
+};
+
+//setPosItem 设置信息块位置
 Items.prototype.setPosItem = function() {
-	var _this=this;
+	var _this = this;
 	for (var i = 0; i < this.options.data.length; i++) {
 		(function() {
-			
+
 			var pos = _this.timeToLine(_this.options.data[i].start);
 			_this.item[i].css({
 				"left": pos
@@ -111,92 +127,91 @@ Items.prototype.setPosItem = function() {
 		})(i)
 	}
 
-}
+};
 
-Items.prototype.itemOverlap = function() {
-	//位置重叠处理
-    ////@ToDo
-}
 
 Items.prototype.addEvent = function() {
 	//点击事件
-	
 	var that = this;
-    that.dom.frame.on("click", "div", function() {
-        var index = that.getIndex(this);
-        that.selectIndex(index);
-        //处理当前块太大的情况
-        var left=parseInt($(this).css("left"));
-       	var X=left-(0+that.options.width)/2;
-       	that.slidX(X);
-        that.trigger('select', index);
-        that.trigger('slid', X);
-    });
-   //     //@ToDo  其他点击事件处理
-    
-}
+	that.dom.frame.on("click", "div", function() {
+		var index = that.getIndex(this);
+		that.selectIndex(index);
+		that.trigger('select', index);
 
-Items.prototype.applyRange = function(start, end) {
+		//处理事件块被选中时候的移动效果  默认移动到时间轴中间
+		var left = parseInt($(this).css("left"));
+		var X = left - (0 + that.options.width) / 2;
+		that.slidX(X);
+		that.trigger('slid', X);
+	});
+	//@ToDo  其他点击事件处理
 
-	if (start && end) {
-		this.options.start = start;
-		this.options.end = end;
-	}
-	this.pe = (this.options.end - this.options.start) / this.options.width;
+};
 
-}
 
+//位置和时间互相转换
 Items.prototype.lineToTime = function(line) {
 
 	if (typeof line == 'undefined') {
 		line = 0; //如果没有值，就默认0
 	};
-	var addtime = line * this.pe;
+	var addtime = line * this.ratio;
 	return new Date(this.options.start.valueOf() + addtime);
 
-}
-
-
+};
 
 Items.prototype.timeToLine = function(date) {
-
 	if (typeof date == 'undefined') {
 		date = new Date(); //如果没有值，就默认当前时间
 	}
-	return (date - this.options.start) / this.pe;
-}
-
-Items.prototype.selectIndex=function(index){
-
-	if(index>=this.itemsLength||index<0){return}
-    
-    $("."+this.dom["item_block_on"]).removeClass(this.dom["item_block_on"]);
-	$("."+this.dom["item_block"]).eq(index).addClass(this.dom["item_block_on"])
-	this.index=index;
+	return (date - this.options.start) / this.ratio;
 };
 
-Items.prototype.getIndex=function(obj){
-	for(var i=0;i<this.item.length;i++){
-		if(obj==this.item[i][0]){     
-			return i; 
+
+//选中某一个信息块
+Items.prototype.selectIndex = function(index) {
+	if (index >= this.itemsLength || index < 0) {
+		return
+	}
+
+	$("." + this.dom["item_block_on"]).removeClass(this.dom["item_block_on"]);
+	$("." + this.dom["item_block"]).eq(index).addClass(this.dom["item_block_on"])
+	this.index = index;
+};
+
+//选中某一个信息块  得到当前信息块的索引
+Items.prototype.getIndex = function(item) {
+	for (var i = 0; i < this.item.length; i++) {
+		if (item == this.item[i][0]) {
+			return i;
 		}
 	}
 	return 0;
 };
 
-Items.prototype.slidX=function(X){
-	var left,startx,start,end,endX,that=this;
-	var left=parseInt(this.dom.frame.css("left"));
-	var startX=0+X;
-	var endX=this.options.width+X;
-    this.dom.frame.animate({
-    	left:left-X
-    },function(){
-    	start=that.lineToTime(startX);
-    	end=that.lineToTime(endX);
-        that.render(start,end);
-    })
-}
+//信息块左右滑动
+Items.prototype.slidX = function(X) {
+	var left,
+		startTime,
+		startx,
+		endTime,
+		endX,
+		that = this;
+	left = parseInt(this.dom.frame.css("left"));
+	startX = 0 + X;
+	endX = this.options.width + X;
+	this.dom.frame.animate({
+		left: left - X
+	}, function() {
+		startTime = that.lineToTime(startX);
+		endTime = that.lineToTime(endX);
+		that.render(startTime, endTime);
+	})
+};
+
+Items.prototype.itemOverlap = function() {
+	//位置重叠处理
+	//@ToDo
+};
+
 Events.mixTo(Items);
-
-
