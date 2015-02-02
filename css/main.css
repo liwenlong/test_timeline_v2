@@ -18,7 +18,8 @@ background: none;
     background: #f60;z-index:10;
 }
 .items-warp{top:10px;height: 150px;}
-.axis-warp{top:180px;height:120px;border-top:2px solid black;font-size: 12px;}
+.axis-warp{top:180px;height:120px;font-size: 12px;}
+.axis-border{top:180px;border-top:2px solid black;width: 10000px;left:-5000px;position: absolute;}
 .majorTxt{width:150px;}
 /*
 slider
