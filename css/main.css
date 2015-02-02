@@ -19,12 +19,12 @@ background: none;
 }
 .items-warp{top:10px;height: 150px;}
 .axis-warp{top:180px;height:120px;border-top:2px solid black;font-size: 12px;}
-
+.majorTxt{width:150px;}
 /*
 slider
 */
 
- #slider{width: 1000px;height: 300px;overflow: hidden;position: relative;margin: 50px;margin-left:250px;}
+#slider{width: 1000px;height: 300px;overflow: hidden;position: relative;margin: 50px;margin-left:250px;}
 .slider-content{width: 100%;}
 .slider-content li{width: 1000px;height: 300px;display: inline-block;text-align: center;}
 .leftBar{width: 50px;height: 100px;background: yellow;left:40px;top:100px;position: absolute;color:red;cursor: pointer;}
