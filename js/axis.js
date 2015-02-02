@@ -95,21 +95,23 @@ Axis.prototype.applyRange = function(start, end) {
 	}
 	this.ratio = (this.options.end - this.options.start) / this.options.width; //设置ratio
 	this.setStep(this.options.basewidth); //设置step和比例
-}
+};
 
 
 //render  重绘刻度尺
 Axis.prototype.render = function(start, end) {
 
 	this.applyRange(start, end);
-	
-    //将刻度尺展示延长，为了方便拖拽等效果时候，不仅仅展示当前的时间范围，还展示前、后时间的刻度尺
+     // renderRange 将刻度尺展示延长，为了方便拖拽等效果时候，不仅仅展示当前的时间范围，还展示前、后时间的刻度尺
     //比如起始时间为1天，那么就在刻度尺增加前天和后天
     this.renderRange(-1,1);   //
 
 };
 
-Axis.prototype.renderRange = function(offsetBefore, offsetAfter) {
+Axis.prototype.renderRange = function(offsetBefore, offsetAfter) { 
+    //offsetBefore, offsetAfter 格式为整数,代表n个刻度尺的宽度的时间
+   //  比如-1，+1，代表刻度尺的时间的前一倍时间和后一倍时间
+
 	var start,
 		end,
 		startX,
@@ -150,93 +152,31 @@ Axis.prototype.renderRange = function(offsetBefore, offsetAfter) {
 	this.dom.frame.css({
 		"left":0
 	})
-	
 	this.dom.frame.html(warpArr.join(" "));
    
 };
 
 //renderName  重绘某一个子刻度尺  提供刻度尺的dom名称 以及刻度尺的位置
-Axis.prototype.renderName21212 = function(offsetBefore, offsetAfter) {
 
-	var start,
-		end,
-		startX,
-		endX,
-		warpobj, //外部父亲元素
-		lineCurrent; //刻度尺上面刻度数当前所对应的时间
-
-	startX = 0 + offsetX;
-	endX = this.options.width + offsetX;
-	start = this.lineToTime(startX);
-	end = this.lineToTime(endX);
-
-
-	warpobj = $('<div class="' + wrapDom + '" style="width:' + this.options.width + 'px;height:100%;float:left;position:relative;overflow:hidden"></div>');
-	lineCurrent = this.roundDate(start);
-
-	//每个刻度尺包含4部分
-	//BaseLine   小刻度
-	// BaseTxt   小刻度的数值
-	// MajorLine   大刻度
-	// MajorTxt    大刻度的数值
-
-	while (lineCurrent.valueOf() < end.valueOf()) {
-		//画四条线
-		lineCurrent = this.lineNext(lineCurrent); //设置下一个时间		
-		var left = this.timeToLine(lineCurrent) - offsetX;
-		txt1 = this.formateLineTxt(lineCurrent);
-		txt2 = this.formateMajorTxt(lineCurrent);
-
-		//调用画4个部分
-		warpobj.append(this.drawBaseLine(left));
-		warpobj.append(this.drawBaseTxt(left, txt1));
-
-		if (this.isMajor(lineCurrent)) {
-			//大刻度
-			warpobj.append(this.drawMajorLine(left));
-			warpobj.append(this.drawMajorTxt(left, txt2));
-		}
-	}
-
-	this.dom.frame.append(warpobj);
-
-};
 
 //drawBaseLine 、drawBaseTxt 、drawMajorLine 、drawMajorTxt 分别为画大刻度、小刻度方法
 Axis.prototype.drawBaseLine = function(left) {
-	// var line = $("<div class='baseLine'></div>");
-	// line.css({
-	// 	"left": (left) + "px"
-	// });
-	// return line;
+	
     return "<div class='baseLine' style='left:"+left+"px;'></div>";
 }
 
 Axis.prototype.drawBaseTxt = function(left, txt) {
-	// var line = $("<div class='baseTxt'></div>");
-	// line.html(txt);
-	// line.css({
-	// 	"left": (left) + "px"
-	// });
+	
 	return "<div class='baseTxt' style='left:"+left+"px;'>"+txt+"</div>";
 }
 
 Axis.prototype.drawMajorLine = function(left) {
-	// var line = $("<div class='majorLine'></div>");
-	// line.css({
-	// 	"left": (left) + "px"
-	// });
-	// return line;
+	
    return "<div class='majorLine' style='left:"+left+"px;'></div>"
 }
 
 Axis.prototype.drawMajorTxt = function(left, txt) {
-	// var line = $("<div class='majorTxt'></div>");
-	// line.html(txt);
-	// line.css({
-	// 	"left": (left) + "px"
-	// });
-	// return line;
+	
 	return "<div class='majorTxt' style='left:"+left+"px;'>"+txt+"</div>";
 }
 
