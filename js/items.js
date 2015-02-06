@@ -5,10 +5,13 @@ function Items(options) {
 	this.options = {
 		"container": $("#timeLine"),
 		"width": 1500,
+		"height": 150,
 		"basewidth": 30,
 		"start": null,
 		"end": null,
-		"data": null
+		"data": null,
+		"midH": 30
+
 	}
 	this.dom = {
 		"item_block": "item_block",
@@ -50,12 +53,11 @@ Items.prototype.init = function(options) {
 		this.options.start = start;
 		this.options.end = end;
 	}
-	
+
 	this.applyRange();
 	this.creeatItem();
-	
-	this.addEvent();
 
+	this.addEvent();
 
 };
 
@@ -76,6 +78,7 @@ Items.prototype.render = function(start, end, data) {
 	} else {
 		this.setPosItem();
 	}
+	this.itemOverlap();
 };
 
 //applyRange  设置时间轴的范围，以确定事件块的位置
@@ -212,6 +215,56 @@ Items.prototype.slidX = function(X) {
 Items.prototype.itemOverlap = function() {
 	//位置重叠处理
 	//@ToDo
+	function removeOverlap(arr, w, h, H, midH) {
+		/*
+		  arr 处理的对象数组
+		  w    对象的宽
+		  h    对象的高
+		  H    父节点的高度
+		  midH  对象的初始化top值，作为位置基准线
+		*/
+		var arr1 = [];
+		var len = arr.length;
+		var left, top, preleft, pretop;
+		arr[0].attr("data-top", midH);
+		for (var i = 1; i < len; i++) {
+			left = parseInt(arr[i].css("left"));
+			top = parseInt(arr[i].css("top"));
+			for (var j = 0; j < i; j++) {
+				preleft = parseInt(arr[j].css("left"));
+				pretop = parseInt(arr[j].attr("data-top"));
+				if (Math.abs(left - preleft) <= (w) && Math.abs(top - pretop) <= (h)) {
+					//改变top值
+					top = (pretop + h + 10 + H) % H;
+				}
+				if (Math.abs(left - preleft) > (w)) {
+					top = midH;
+				}
+
+			}
+
+			arr[i].attr("data-top", top);
+		}
+		for (var i = 1; i < len; i++) {
+			(function(i) {
+				var curObj = arr[i];
+				var top = curObj.attr("data-top");
+				curObj.animate({
+					"top": top
+				}, 400)
+
+			})(i)
+
+		}
+
+	}
+
+
+	var itemWidth = this.item[0].width(),
+		itemHeight = this.item[0].height();
+	removeOverlap(this.item, itemWidth, itemHeight, this.options.height, this.options.midH);
+
+
 };
 
 Events.mixTo(Items);
