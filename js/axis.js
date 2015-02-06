@@ -11,19 +11,15 @@ function Axis(options) {
 		//存放dom的一些参数
 		// "container": $("#timeLine"),
 		// "frame": $(".axis-warp"),
-		// "before": $(".axis-before"),
-		// "curren": $(".axis-curren"),
-		// "after": $(".axis-after")
 	}
 
-	this.scaleObj = { //刻度尺的时间范围
+	this.scaleObj = {  //刻度尺的时间范围
 		MILLISECOND: 1,
 		SECOND: 2,
 		MINUTE: 3,
 		HOUR: 4,
 		DAY: 5,
 		WEEKDAY: 6,
-		MONTH: 9,
 		YEAR: 8
 	};
 	this.short = {
@@ -188,9 +184,10 @@ Axis.prototype.addevents = function() {
 	var startX, endX, startTime, endTime, startLine, endLine;
 	obj.off();
 	var isDrag=true;
+	var obj1=$("<div></div>")
+	
 	obj.on("mousedown", function(event) {
-		if(!isDrag) return;
-		isDrag=false;
+		isDrag=true;
 		startX = event.clientX;
 		startLine = 0;
 		endLine = that.options.width;
@@ -199,17 +196,19 @@ Axis.prototype.addevents = function() {
 			"cursor": "move"
 		});
 		$("body").on("mousemove", function(event) {
-			endX = event.clientX;
-			endX = endX - startX;
-			frame.css({
-				left: frameLeft + endX
-			})
-			that.trigger('moving', endX); //触发正在拖拽中事件
+			if(isDrag){
+				endX = event.clientX;
+				endX = endX - startX;
+				frame.css({
+					left: frameLeft + endX
+				})
+				that.trigger('moving', endX); //触发正在拖拽中事件	
+			}
+			
 		});
-
 		$("body").on("mouseup", function(event) {
-			$("body").off("mousemove");
-			$("body").off("mouseup");
+			isDrag=false;
+			$("body").off();
 			endX = event.clientX - startX;
 			startLine = startLine - endX;
 			endLine = endLine - endX;
@@ -222,7 +221,9 @@ Axis.prototype.addevents = function() {
 			});
 			
 		});
-		isDrag=true;
+		
+		 event.stopImmediatePropagation();
+		return false;
 	});
 
 	obj.on("mousewheel", function(event) {

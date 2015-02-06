@@ -24,7 +24,7 @@
             "reset": $("#reset"),
             "big": $("#big"),
             "small": $("#small"),
-            "basewidth": 30, //刻度尺的基准宽度，用来生成刻度尺的标示所用，数值越大，刻度尺越稀疏
+            "basewidth": 40, //刻度尺的基准宽度，用来生成刻度尺的标示所用，数值越大，刻度尺越稀疏
             "start": null, //时间轴开始时间
             "end": null, //时间轴结束时间
             "ratio": null, //当前时间轴的系数，由起始时间和刻度尺宽度决定
@@ -130,14 +130,14 @@
             "data": this.options.data
         });
 
-    }
+    };
 
 
     Timeline.prototype.setOptions = function(op) {
         if (!op) return;
         this.options = $.extend(this.options, op);
 
-    }
+    };
 
 
 
@@ -160,7 +160,7 @@
             }
             return (date - _this.options.start) / _this.options.ratio;
         }
-    }
+    };
 
     Timeline.prototype.setDate = function(data) {
         //set data  data必须是一个数组
@@ -190,7 +190,7 @@
             "end": end
         }
 
-    }
+    };
 
     //重置功能
     Timeline.prototype.reset = function() {
@@ -274,7 +274,7 @@
         if (zoomFactor <= -1) {
             zoomFactor = -0.2;
         }
-
+        
         // zoom start Date and end Date relative to the zoomAroundDate
         var startDiff = (this.options.start.valueOf() - time);
         var endDiff = (this.options.end.valueOf() - time);
