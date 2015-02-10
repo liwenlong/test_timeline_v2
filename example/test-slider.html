@@ -4,38 +4,15 @@
     <meta name="google" value="notranslate">
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <title>test 轴</title>
-    <style>
-        *{margin: 0px;padding: 0px;}
-        #slider{overflow: hidden;position: relative;margin: 50px;border: 1px solid;width: 1000px;height: 320px;}
-        .slider-content{width: 1000px;height: 320px;}
-        
-       .leftBar{width: 50px;height: 100px;background: yellow;left:0px;top:100px;position: absolute;color:red;display: none;z-index: 10;}
-       .rightBar{width: 50px;height: 100px;background: yellow;right:0px;top:100px;position: absolute;color:red;display: none;z-index: 10;}
-       .barOn{background: blue;}
-       .slider-content li{display: block;padding: 10px;width: 980px;height: 300px;}
-       .slider-content li img{float: left;height: 240px;width: 360px;margin: 0px 20px 20px 0px;}
-       .slider-content li h3{text-align: center;}
-       .slider-content li h4{font-size: 12px;text-align: right;font-weight: normal;line-height: 30px;color: #787878;}
-      .slider-content .des{text-decoration: 2em;line-height: 32px;}
-    </style>
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
 
 </head>
 <body>
 
 
 
-<div id="slider">
-   <div class="leftBar">前一张</div>
-   <div class="rightBar">下一张</div>
-   <ul class="slider-content">
-        <li>
-            <h3></h3>
-            <span></span>
-            <img src="" alt="">
-            <p></p>
-        </li>
-
-   </ul>
+<div id="timeLine">
+   
 </div>
 
 <script type="text/javascript" src="../js/jquery.js"></script>
@@ -43,41 +20,7 @@
 <script type="text/javascript" src="../js/slider.js"></script>
 
 <script type="text/javascript">
-	// var slider=new Slider($("#slider"),{
-	// "data":[{
- //            "start": new Date(2010,7,23,23,0,0),
- //            "title": "test1",
- //            "content": "<img src='../img/1.jpg'/>"
-
- //        }, {
- //            "start": new Date(2010,7,24,16,0,0),
- //            "title": "test2",
- //            "content": "<img src='../img/2.jpg'/>"
-
- //        }, {
- //            "start": new Date(2010,7,26),
- //            "title": "test3",
- //            "content": "<img src='../img/3.jpg'/>"
-
- //        }, {
- //            "start": new Date(2010,7,28),
- //            "title": "test4",
- //            "content": "<img src='../img/4.jpg'/>"
-
- //        }, {
- //            "start": new Date(2010,7,29),
- //            "title": "test5",
- //            "content": "<img src='../img/5.jpg'/>"
-
- //        }]
-
-	// });
-    
-</script>
-
-
-<script type="text/javascript">
-    var slider=new Slider($("#slider"),{
+    var slider=new Slider({
     "data":[{
             "start": new Date(2010,7,23,23,0,0),
             "title": "新闻标题1",
@@ -87,24 +30,24 @@
 
         }, {
             "start": new Date(2010,7,24,16,0,0),
-            "title": "新闻标题1",
+            "title": "新闻标题2",
             "img":"../img/2.jpg",
             "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）"
 
         }, {
             "start": new Date(2010,7,26),
-           "title": "新闻标题1",
+           "title": "新闻标题3",
             "img":"../img/3.jpg",
             "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）"
         }, {
             "start": new Date(2010,7,28),
-           "title": "新闻标题1",
+           "title": "新闻标题4",
             "img":"../img/4.jpg",
             "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）"
 
         }, {
             "start": new Date(2010,7,29),
-            "title": "新闻标题1",
+            "title": "新闻标题5",
             "img":"../img/5.jpg",
             "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）"
 

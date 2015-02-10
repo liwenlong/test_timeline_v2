@@ -18,9 +18,8 @@
             return;
         }
         this.options = { //default options
-
             "width": 1500,
-            "height": 300,
+            "height": 800,
             "reset": $("#reset"),
             "big": $("#big"),
             "small": $("#small"),
@@ -50,16 +49,28 @@
     }
 
     Timeline.prototype.init = function() {
-        if (!this.dom.frame) {
-            this.dom.frame = $('<div style="position:relative;width:100%;"></div>');
-            this.dom.container.append(this.dom.frame);
-        }
+       
 
         this.setDate(this.options.data); //初始化data
         this.setDomCss(); //设置dom的css
         this.applyRange(); //设置事件比例尺   
 
-        //创建子组件                
+        //创建子组件  slider items axis   
+        this.slider = new Slider( {
+            "data": this.options.data
+        }); 
+
+        if (!this.dom.frame) {
+
+            //将item和axis外面包一层div，以及背景，选中div等的增加处理
+            this.dom.frame = $('<div class="timeLine-bottom"></div>');
+            this.dom.topBorder=$('<div class="topBorder"></div>');  //顶部的一条线
+            this.dom.midBorder=$('<div class="midborder"></div>');  //中间的蓝线
+            
+            this.dom.frame.append(this.dom.topBorder);               
+            this.dom.frame.append(this.dom.midBorder);
+            this.dom.container.append(this.dom.frame);
+        }
         var itemDate = {
             "container": this.dom.frame,
             "width": this.options.width,
@@ -77,10 +88,8 @@
             "end": this.options.end
         }
         this.axis = new Axis(axisData);
-        
-        this.slider = new Slider($("#slider"), {
-            "data": this.options.data
-        });
+      
+       
 
         this.render();
         this.addEvent(); //绑定事件
@@ -294,3 +303,4 @@
 })(jQuery)
 
 //TODO 关于css和ui调整
+//宽度、timeline、items调整、以及

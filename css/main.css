@@ -1,40 +1,188 @@
-*{padding: 0px;margin: 0px;}
-
-::selection
-{
-background: none;
+* {
+	padding: 0px;
+	margin: 0px;
 }
-::-moz-selection
-{
-background: none;
-}
-#timeLine{width: 1500px;height: 330px;margin: 30px;border:1px solid; overflow: hidden;position:relative;}
 
-.baseLine{position: absolute;height: 50px;border-left: 1px solid;}
-.baseTxt{position: absolute;top:30px;padding:5px;}
-.majorLine{position: absolute;top:50px;height:50px;border-left: 1px solid red;}
-.majorTxt{position: absolute;top:80px;padding:5px;font-size: 12px;}
-
-.item_block{width:80px;height:50px; position: absolute;border: 1px solid red;top:30px;background: white;cursor: pointer;}
-.item_block_on{
-    background: #f60;z-index:10;
+::selection {
+	background: none;
 }
-.items-warp{top:10px;height: 150px;overflow: hidden;}
-.axis-warp{top:180px;height:120px;font-size: 12px;}
-.axis-border{top:180px;border-top:2px solid black;width: 10000px;left:-5000px;position: absolute;}
-.majorTxt{width:150px;}
+
+::-moz-selection {
+	background: none;
+}
+
+#timeLine {
+	width: 1500px;
+	height: 800px;
+	margin: 30px;
+	overflow: hidden;
+	position: relative;
+}
+.timeLine-bottom{
+	position:relative;width:100%;
+	height:300px;
+	overflow:hidden;
+	background: #e9e9e9;
+}
+.topBorder {
+	top: 200px;
+	border-top: 2px solid black;
+	width: 10000px;
+	left: -5000px;
+	position: absolute;
+}
+.midborder {
+	top: 0px;
+	height:200px;
+	left:50%;
+	width:3px;
+	background: #08c;
+	position: absolute;
+}
+/*
+  axis
+
+ */
+ .axis-warp {
+	top: 200px;
+	height: 100px;
+	font-size: 12px;
+}
+.baseLine {
+	position: absolute;
+	height: 40px;
+	border-left: 1px solid;
+}
+
+.baseTxt {
+	position: absolute;
+	top: 20px;
+	padding: 5px;
+}
+
+.majorLine {
+	position: absolute;
+	top: 40px;
+	height: 20px;
+	border-left: 1px solid red;
+}
+
+.majorTxt {
+	width: 150px;
+	position: absolute;
+	top: 50px;
+	padding: 5px;
+	font-size: 12px;
+}
+
+
+/*
+  items
+
+ */
+ .items-warp {
+ 	position:absolute;
+ 	left:0px;
+ 	width: 100%;
+	top: 10px;
+	height: 190px;
+}
+
+.item_block {
+	width: 120px;
+	height: 40px;
+	position: absolute;
+	border: 1px solid red;
+	top: 30px;
+	background: white;
+	cursor: pointer;
+}
+
+.item_block_on {
+	background: #f60;
+	z-index: 10;
+}
+
+
+
+
+
+
 /*
 slider
 */
 
-#slider{overflow: hidden;position: relative;margin: 50px 350px;border: 1px solid;width: 1000px;height: 320px;}
-.slider-content{width: 1000px;height: 320px;}
+#slider {
+	overflow: hidden;
+	position: relative;
+	margin: 50px 350px;
+	border: 1px solid;
+	width: 1000px;
+	height: 320px;
+}
 
-.leftBar{width: 50px;height: 100px;background: yellow;left:0px;top:100px;position: absolute;color:red;display: none;z-index: 10;}
-.rightBar{width: 50px;height: 100px;background: yellow;right:0px;top:100px;position: absolute;color:red;display: none;z-index: 10;}
-.barOn{background: blue;}
-.slider-content li{display: block;padding: 10px;width: 980px;height: 300px;}
-.slider-content li img{float: left;height: 240px;width: 360px;margin: 0px 20px 20px 0px;}
-.slider-content li h3{text-align: center;}
-.slider-content li h4{font-size: 12px;text-align: right;font-weight: normal;line-height: 30px;color: #787878;}
-.slider-content .des{text-decoration: 2em;line-height: 32px;}
+.slider-content {
+	width: 1000px;
+	height: 320px;
+}
+
+.leftBar {
+	width: 50px;
+	height: 100px;
+	background: #696969;
+	left: 0px;
+	top: 100px;
+	position: absolute;
+	color: white;
+	display: none;
+	z-index: 10;
+	line-height: 100px;
+}
+
+.rightBar {
+	width: 50px;
+	height: 100px;
+	background: #696969;
+	right: 0px;
+	top: 100px;
+	position: absolute;
+	color: white;
+	display: none;
+	z-index: 10;
+	line-height: 100px;
+}
+
+.barOn {
+	background: #4099d6;
+}
+
+.slider-content li {
+	display: block;
+	padding: 10px;
+	width: 980px;
+	height: 300px;
+}
+
+.slider-content li img {
+	float: left;
+	height: 240px;
+	width: 360px;
+	margin: 0px 20px 20px 0px;
+}
+
+.slider-content li h3 {
+	text-align: center;
+}
+
+.slider-content li h4 {
+	font-size: 12px;
+	text-align: right;
+	font-weight: normal;
+	line-height: 30px;
+	color: #787878;
+}
+
+.slider-content .des {
+	text-decoration: 2em;
+	line-height: 32px;
+}

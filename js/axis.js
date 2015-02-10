@@ -2,7 +2,7 @@ function Axis(options) {
 	this.options = {
 		"container": $("#timeLine"),
 		"width": 1500,
-		"basewidth": 50,
+		"basewidth":50,
 		"start": null,
 		"end": null
 	}
@@ -37,6 +37,7 @@ function Axis(options) {
 }
 Axis.prototype.setOptions = function(data) {
 	this.options = $.extend(this.options, data);
+	this.options.width=this.options.container.width();  //将width属性设置为container的宽度
 }
 
 //setDefaultTime  设置刻度尺的默认时间，不填的话，默认为空
@@ -56,12 +57,11 @@ Axis.prototype.setDefaultDom = function() {
 	this.dom.container = this.options.container || this.dom.container; //传入默认container元素
 	if (!dom.frame) { //创建frame
 		dom.frame = $("<div class='axis-warp' style='position:absolute;left:0px;width:1000%;'></div>");
-		
 		dom.baseLineArr = [];
 		dom.baseTxtArr = [];
 		dom.majorLineArr = [];
 		dom.majorTxtArr = [];
-		this.dom.container.append($("<div class='axis-border'></div>"))
+		//this.dom.container.append($("<div class='axis-border'></div>"))
 		this.dom.container.append(dom.frame);
 	}
 }

@@ -1,17 +1,12 @@
 function Items(options) {
-
-
-
 	this.options = {
 		"container": $("#timeLine"),
-		"width": 1500,
-		"height": 150,
+		"height": 190,
 		"basewidth": 30,
 		"start": null,
 		"end": null,
 		"data": null,
 		"midH": 30
-
 	}
 	this.dom = {
 		"item_block": "item_block",
@@ -25,14 +20,14 @@ function Items(options) {
 
 Items.prototype.setOptions = function(data) {
 	this.options = $.extend(this.options, data);
+	this.options.width = this.options.container.width();
 }
-
 
 //init 初始化  
 Items.prototype.init = function(options) {
 	this.setOptions(options);
 	var dom = this.dom;
-	dom.frame = $("<div class='items-warp' style='position:absolute;left:0px;width:100%;'></div>");
+	dom.frame = $("<div class='items-warp'></div>")
 	this.options.container.append(dom.frame);
 	if (!this.options.start) {
 		var start, end;
@@ -56,12 +51,8 @@ Items.prototype.init = function(options) {
 
 	this.applyRange();
 	this.creeatItem();
-
 	this.addEvent();
-
 };
-
-
 
 //重绘信息块
 //start, end  起始时间
@@ -99,21 +90,18 @@ Items.prototype.creeatItem = function() {
 	dom.frame.empty();
 	this.item = [];
 	for (var i = 0; i < this.options.data.length; i++) {
-		(function() {
-			var item = $('<div class="item_block"></div>');
-			var pos = _this.timeToLine(_this.options.data[i].start);
-			item.html(_this.options.data[i].title);
-			item.css({
-				"left": pos
-			})
-
-			_this.item.push(item);
-			dom.frame.append(item);
-		})(i)
-
+		var item = $('<div class="item_block" ></div>');
+		var pos = this.timeToLine(this.options.data[i].start);
+		item.html(this.options.data[i].title);
+		item.css({
+			"left": pos
+		})
+		this.item.push(item);
+		dom.frame.append(item);
 	}
+	this.item[0].addClass(this.dom.item_block_on); //默认选中第一个
 	this.itemsLength = this.options.data.length;
-	this.selectIndex(0);
+	
 
 };
 
@@ -122,7 +110,6 @@ Items.prototype.setPosItem = function() {
 	var _this = this;
 	for (var i = 0; i < this.options.data.length; i++) {
 		(function() {
-
 			var pos = _this.timeToLine(_this.options.data[i].start);
 			_this.item[i].css({
 				"left": pos
@@ -139,13 +126,7 @@ Items.prototype.addEvent = function() {
 	that.dom.frame.on("click", "div", function() {
 		var index = that.getIndex(this);
 		that.selectIndex(index);
-		that.trigger('select', index);
 
-		//处理事件块被选中时候的移动效果  默认移动到时间轴中间
-		var left = parseInt($(this).css("left"));
-		var X = left - (0 + that.options.width) / 2;
-		that.slidX(X);
-		that.trigger('slid', X);
 	});
 	//@ToDo  其他点击事件处理
 
@@ -154,7 +135,6 @@ Items.prototype.addEvent = function() {
 
 //位置和时间互相转换
 Items.prototype.lineToTime = function(line) {
-
 	if (typeof line == 'undefined') {
 		line = 0; //如果没有值，就默认0
 	};
@@ -176,9 +156,20 @@ Items.prototype.selectIndex = function(index) {
 	if (index >= this.itemsLength || index < 0) {
 		return
 	}
-
+	var curObj = $("." + this.dom["item_block"]).eq(index);
 	$("." + this.dom["item_block_on"]).removeClass(this.dom["item_block_on"]);
-	$("." + this.dom["item_block"]).eq(index).addClass(this.dom["item_block_on"])
+	curObj.addClass(this.dom["item_block_on"])
+		//处理事件块被选中时候的移动效果  默认移动到时间轴中间
+	var left = parseInt(curObj.css("left"));
+	//if(left<0||left>(0 + this.options.width) / 2){    //只有事件块在刻度的外面或者刻度才的右侧才触发移动效果
+	    var X = left - (0 + this.options.width) / 2;
+		this.slidX(X);
+
+	//}
+
+	
+	this.trigger('select', index);
+
 	this.index = index;
 };
 
@@ -206,10 +197,12 @@ Items.prototype.slidX = function(X) {
 	this.dom.frame.animate({
 		left: left - X
 	}, function() {
+
 		startTime = that.lineToTime(startX);
 		endTime = that.lineToTime(endX);
 		that.render(startTime, endTime);
 	})
+	this.trigger('slid', X);
 };
 
 Items.prototype.itemOverlap = function() {
@@ -242,7 +235,7 @@ Items.prototype.itemOverlap = function() {
 				}
 
 			}
-			
+
 
 			arr[i].attr("data-top", top);
 		}
