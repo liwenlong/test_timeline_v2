@@ -30,12 +30,10 @@
             "ratio": null, //当前时间轴的系数，由起始时间和刻度尺宽度决定
             "data": [{
                 "start": new Date(2015, 1, 15),
-                "content": "this is content"
-
+                "title": "this is content"
             }, {
                 "start": new Date(2015, 2, 15),
-                "content": "this is content"
-
+                "title": "this is content"
             }]
         }
         this.resetDate = {};
@@ -96,6 +94,7 @@
         this.axis.render(this.options.start, this.options.end);
         this.items.render(this.options.start, this.options.end, this.options.data);
 
+           
     };
 
     //applyRange  重新设置比例尺   参数为起始时间，不写默认当前的
@@ -113,7 +112,6 @@
             "width": this.options.width,
             "height": this.options.height
         })
-
     }
 
     //addDate  新增时间
@@ -210,7 +208,6 @@
 
         //item 和 slider和axis事件绑定与触发
         //用event插件来实现自定义事件触发
-
         this.axis.on("moving", function(moveX) {
             that.items.dom.frame.css({
                 "left": moveX
@@ -224,14 +221,12 @@
             that.applyRange(start, end);
             that.render(start, end);
         });
-
         this.items.on("select", function(index) {
             that.slider.showIndex(index);
         });
         this.items.on("slid", function(X) {
             that.axis.slidX(X);
         });
-
         this.slider.on("left", function(index) {
             that.items.selectIndex(index - 1);
         });
@@ -245,11 +240,9 @@
             that.reset();
         })
         this.options.big.on("click", function() {
-
             that.zoom(1);
         })
         this.options.small.on("click", function() {
-
             that.zoom(-1);
         })
 
@@ -299,3 +292,5 @@
     window.Timeline = Timeline;
 
 })(jQuery)
+
+//TODO 关于css和ui调整

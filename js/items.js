@@ -242,6 +242,7 @@ Items.prototype.itemOverlap = function() {
 				}
 
 			}
+			
 
 			arr[i].attr("data-top", top);
 		}

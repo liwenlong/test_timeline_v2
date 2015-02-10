@@ -10,7 +10,6 @@ function Slider(frame,options){
 		leftBar:"leftBar",
 		rightBar:"rightBar",
 		data:null
-
 	}
 	
 	this.init(options);
@@ -34,8 +33,31 @@ Slider.prototype.setDate=function(data){
     }
     var str=[];
     this.length=data.length;
+    var title,time,img,des;
     for(var i=0;i<data.length;i++){
-    	str.push('<li style="display:none;">'+data[i].content+'</li>');
+    	// title=data[i].title??data[i].title:" ";
+    	// time=data[i].start??data[i].start:" ";
+    	// img=data[i].img??data[i].img:" ";
+    	// des=data[i].des??data[i].des:" ";
+    	title=data[i].title;
+    	time=data[i].start;
+    	img=data[i].img;
+    	des=data[i].des;
+    	// str.push('<li style="display:none;">'+data[i].content+'</li>');
+    	str.push('<li>');
+    	str.push('  <h3>');  
+    	str.push(      title); 
+    	str.push('  </h3>'); 
+    	str.push('  <h4>');
+    	str.push(      time); 
+    	str.push('  </h4>'); 
+    	str.push('  <div class="des">'); 
+    	str.push('    <img src="'); 
+    	str.push(      img); 
+    	str.push('    " height="240" ></img>'); 
+    	str.push(      des);
+    	str.push('   </div>'); 
+    	str.push('</li>');    
     }
     str=str.join(" ");
     this.frame.find(".slider-content").html(str);
@@ -52,7 +74,7 @@ Slider.prototype.showIndex=function(index,Timer){
 	  "opacity":0
 	},Timer,function(){
 		$(this).hide();
-	})		
+	});		
 	this.frame.find("li").eq(index).animate({
 	  "opacity":1
 	},Timer,function(){
@@ -72,20 +94,40 @@ Slider.prototype.setCurrenIndex=function(index){
     this.currenIndex=index;
 }
 
+//TODO 动画滑动的效果
+  
 Slider.prototype.events=function(){
 	var prv=$("."+this.options.leftBar);
 	var next=$("."+this.options.rightBar);
 	var _this=this;
-	prv.on("click",function(){
+    this.frame.hover(function(){
+    	prv.show();
+        next.show();
+    },function(){
+    	prv.hide();
+        next.hide();
+    })
+	
+	prv.hover(function(){
+		$(this).addClass('barOn');
+	},function(){
+		$(this).removeClass('barOn');
+	});
+	next.hover(function(){
+		$(this).addClass('barOn');
+	},function(){
+		$(this).removeClass('barOn');
+	});
+    prv.on("click",function(){
 		_this.showIndex(_this.getCurrenIndex()-1);
 		_this.trigger('left',_this.getCurrenIndex())
 
-	})
+	});
 	next.on("click",function(){
 		_this.showIndex(_this.getCurrenIndex()+1);
-		_this.trigger('right',_this.getCurrenIndex())
-
+		_this.trigger('right',_this.getCurrenIndex());
 	})
+	
 }
 
 Events.mixTo(Slider);
