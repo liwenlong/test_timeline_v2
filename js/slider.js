@@ -82,8 +82,7 @@ Slider.prototype.showIndex = function(index, Timer) {
 	if (index >= this.length || index < 0) {
 		return;
 	}
-	console.log(index);
-	console.log(this.currenIndex);
+	
 	this.dom.frame.find("li").eq(this.currenIndex).animate({
 		"opacity": 0
 	}, Timer, function() {

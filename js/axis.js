@@ -57,11 +57,12 @@ Axis.prototype.setDefaultDom = function() {
 	this.dom.container = this.options.container || this.dom.container; //传入默认container元素
 	if (!dom.frame) { //创建frame
 		dom.frame = $("<div class='axis-warp' style='position:absolute;left:0px;width:1000%;'></div>");
+		
 		dom.baseLineArr = [];
 		dom.baseTxtArr = [];
 		dom.majorLineArr = [];
 		dom.majorTxtArr = [];
-		//this.dom.container.append($("<div class='axis-border'></div>"))
+		this.dom.container.append($("<div class='axis-border'></div>"))
 		this.dom.container.append(dom.frame);
 	}
 }

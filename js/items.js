@@ -235,8 +235,6 @@ Items.prototype.itemOverlap = function() {
 				}
 
 			}
-
-
 			arr[i].attr("data-top", top);
 		}
 		for (var i = 1; i < len; i++) {
@@ -256,7 +254,7 @@ Items.prototype.itemOverlap = function() {
 
 	var itemWidth = this.item[0].width(),
 		itemHeight = this.item[0].height();
-	removeOverlap(this.item, itemWidth, itemHeight, this.options.height, this.options.midH);
+	removeOverlap(this.item, itemWidth, itemHeight, this.options.height-itemHeight, this.options.midH);
 
 
 };
