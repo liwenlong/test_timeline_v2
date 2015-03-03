@@ -23,8 +23,11 @@ Slider.prototype.init = function(data) {
 	var dom = this.dom;
 	if (!dom.frame) {
 		dom.frame = $('<div id="slider"></div>');
+		dom.frame.css({          //初始化宽、高
+			height:this.options.height,
+			width:this.options.width
+		})
 		this.options.container.append(dom.frame);
-		
 		dom.pre = $('<div class="leftBar">前一张</div>');
 		dom.next = $('<div class="rightBar">下一张</div>');
 		dom.content = $('<ul class="slider-content"></ul>');

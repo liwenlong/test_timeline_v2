@@ -2,6 +2,7 @@ function Axis(options) {
 	this.options = {
 		"container": $("#timeLine"),
 		"width": 1500,
+		"height":100,
 		"basewidth":50,
 		"start": null,
 		"end": null
@@ -57,7 +58,10 @@ Axis.prototype.setDefaultDom = function() {
 	this.dom.container = this.options.container || this.dom.container; //传入默认container元素
 	if (!dom.frame) { //创建frame
 		dom.frame = $("<div class='axis-warp' style='position:absolute;left:0px;width:1000%;'></div>");
-		
+		dom.frame.css({
+			"height":this.options.height,
+			"width":this.options.width
+		})
 		dom.baseLineArr = [];
 		dom.baseTxtArr = [];
 		dom.majorLineArr = [];

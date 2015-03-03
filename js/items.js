@@ -27,7 +27,11 @@ Items.prototype.setOptions = function(data) {
 Items.prototype.init = function(options) {
 	this.setOptions(options);
 	var dom = this.dom;
-	dom.frame = $("<div class='items-warp'></div>")
+	dom.frame = $("<div class='items-warp'></div>");
+	dom.frame.css({
+		"height":this.options.height,
+		"width":this.options.width
+	})
 	this.options.container.append(dom.frame);
 	if (!this.options.start) {
 		var start, end;
@@ -94,7 +98,9 @@ Items.prototype.creeatItem = function() {
 		var pos = this.timeToLine(this.options.data[i].start);
 		item.html(this.options.data[i].title);
 		item.css({
-			"left": pos
+			"left": pos,
+			"width":this.options.item_width,
+			"height":this.options.item_height
 		})
 		this.item.push(item);
 		dom.frame.append(item);

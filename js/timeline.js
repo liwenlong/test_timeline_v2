@@ -49,15 +49,17 @@
     }
 
     Timeline.prototype.init = function() {
-       
 
         this.setDate(this.options.data); //初始化data
         this.setDomCss(); //设置dom的css
         this.applyRange(); //设置事件比例尺   
 
-        //创建子组件  slider items axis   
+        //创建子组件  slider items axis  
         this.slider = new Slider( {
-            "data": this.options.data
+            "dataType":this.options.dataType,
+            "data": this.options.data,
+            "width":this.options.slider_width,
+            "height":this.options.slider_height,
         }); 
 
         if (!this.dom.frame) {
@@ -74,6 +76,9 @@
         var itemDate = {
             "container": this.dom.frame,
             "width": this.options.width,
+            "height":this.options.item_wrap_height,
+            "item_width":this.options.item_width,
+            "item_height":this.options.item_height,
             "basewidth": this.options.basewidth,
             "start": this.options.start,
             "end": this.options.end,
@@ -83,6 +88,7 @@
         var axisData = {
             "container": this.dom.frame,
             "width": this.options.width,
+            "height":this.options.axis_wrap_height,
             "basewidth": this.options.basewidth,
             "start": this.options.start,
             "end": this.options.end
@@ -139,7 +145,6 @@
 
     };
 
-
     Timeline.prototype.setOptions = function(op) {
         if (!op) return;
         this.options = $.extend(this.options, op);
@@ -170,15 +175,21 @@
     };
 
     Timeline.prototype.setDate = function(data) {
-        //set data  data必须是一个数组
-        var start, end;
+        //设定信息数据
+        //data必须是一个数组
+        var start, end,endPos;
         if ($.isArray(data) && data.length > 0) {
-
+            //判断条数，超出进行处理
+            endPos=data.length<this.options.show_item_num?data.length:this.options.show_item_num;
+            console.log(endPos);
             start = data[0].start;
-            end = data[data.length - 1].start;
+            end = data[endPos - 1].start;
             // 对传入的数值进行处理 设置一些额外的起始和结束时间，更完整的展示数据
-            var differ = (end.valueOf() - start.valueOf()) / 20
-            start = new Date(start.valueOf() - differ);
+            var differ = (end.valueOf() - start.valueOf()) / 10;
+            if(differ==0){   //当新闻条数只有1个的时候
+                differ=1*24*3600*1000;
+            }
+            start = new Date(start.valueOf() - differ/2);
             end = new Date(end.valueOf() + differ * 2);
             this.options.data = data;
         } else {

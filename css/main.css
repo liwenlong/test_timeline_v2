@@ -115,14 +115,14 @@ slider
 #slider {
 	overflow: hidden;
 	position: relative;
-	margin: 50px 350px;
+	margin: 50px auto;
 	border: 1px solid;
 	width: 1000px;
 	height: 320px;
 }
 
 .slider-content {
-	width: 1000px;
+	
 	height: 320px;
 }
 
@@ -159,7 +159,7 @@ slider
 .slider-content li {
 	display: block;
 	padding: 10px;
-	width: 980px;
+	
 	height: 300px;
 }
 
