@@ -11,6 +11,9 @@
       3、events         自定义事件
    
  */
+
+
+;
 (function($) {
     function Timeline(container, options) {
         if (!container) {
@@ -34,7 +37,7 @@
                 "start": new Date(2015, 2, 15),
                 "title": "this is content"
             }]
-        }
+        };
         this.resetDate = {};
         this.dom = {
             "container": container, //defalut parent dom
@@ -43,7 +46,6 @@
             "item": "items",
             "current": "current"
         };
-
         this.setOptions(options); //合并参数
 
     }
@@ -53,32 +55,22 @@
         this.setDate(this.options.data); //初始化data
         this.setDomCss(); //设置dom的css
         this.applyRange(); //设置事件比例尺   
-
         //创建子组件  slider items axis  
-        this.slider = new Slider( {
-            "dataType":this.options.dataType,
+        this.slider = new Slider({
+            "dataType": this.options.dataType,
             "data": this.options.data,
-            "width":this.options.slider_width,
-            "height":this.options.slider_height,
-        }); 
-
+            "width": this.options.width * 0.8,
+            "height": this.options.height - 300 - this.options.slider_margin_bottom,
+            "slider_margin_bottom": this.options.slider_margin_bottom
+        });
         if (!this.dom.frame) {
-
             //将item和axis外面包一层div，以及背景，选中div等的增加处理
-            this.dom.frame = $('<div class="timeLine-bottom"></div>');
-            this.dom.topBorder=$('<div class="topBorder"></div>');  //顶部的一条线
-            this.dom.midBorder=$('<div class="midborder"></div>');  //中间的蓝线
-            
-            this.dom.frame.append(this.dom.topBorder);               
-            this.dom.frame.append(this.dom.midBorder);
-            this.dom.container.append(this.dom.frame);
+            this.creatTimelineBottomDiv();
         }
         var itemDate = {
             "container": this.dom.frame,
-            "width": this.options.width,
-            "height":this.options.item_wrap_height,
-            "item_width":this.options.item_width,
-            "item_height":this.options.item_height,
+            "width": this.options.width * 0.95,
+            "height": 200,
             "basewidth": this.options.basewidth,
             "start": this.options.start,
             "end": this.options.end,
@@ -87,15 +79,16 @@
         this.items = new Items(itemDate);
         var axisData = {
             "container": this.dom.frame,
-            "width": this.options.width,
-            "height":this.options.axis_wrap_height,
+            "width": this.options.width * 0.95,
+            "height": 100,
             "basewidth": this.options.basewidth,
             "start": this.options.start,
             "end": this.options.end
         }
         this.axis = new Axis(axisData);
-      
-       
+
+
+
 
         this.render();
         this.addEvent(); //绑定事件
@@ -108,9 +101,8 @@
         // 触发子组件的render事件
         this.axis.render(this.options.start, this.options.end);
         this.items.render(this.options.start, this.options.end, this.options.data);
-
-           
     };
+
 
     //applyRange  重新设置比例尺   参数为起始时间，不写默认当前的
     Timeline.prototype.applyRange = function(start, end) {
@@ -127,9 +119,27 @@
             "width": this.options.width,
             "height": this.options.height
         })
-    }
+        this.dom.container.addClass(this.options.skin);
+    };
 
-    //addDate  新增时间
+
+    Timeline.prototype.creatTimelineBottomDiv = function() {
+            this.dom.frame = $('<div class="timeLine-bottom"></div>');
+
+            //创建放大缩小工具
+            this.dom.toolBar = $('<div class="toolBar"></div>');
+            this.dom.big = $('<div id="big"></div>');
+            this.dom.small = $('<div id="small"></div>');
+            this.dom.reset = $('<div id="reset"></div>');
+            this.dom.toolBar.append(this.dom.big).append(this.dom.small).append(this.dom.reset);
+            this.dom.frame.append(this.dom.toolBar);
+            this.dom.topBorder = $('<div class="topBorder"></div>'); //顶部的一条线
+            this.dom.midBorder = $('<div class="midborder"></div>'); //中间的蓝线
+            this.dom.frame.append(this.dom.topBorder);
+            this.dom.frame.append(this.dom.midBorder);
+            this.dom.container.append(this.dom.frame);
+        }
+        //addDate  新增时间
     Timeline.prototype.addDate = function(data) {
         if (!data) {
             return;
@@ -138,7 +148,6 @@
         this.setDate(data);
         this.applyRange();
         this.render();
-
         this.slider.init({
             "data": this.options.data
         });
@@ -150,9 +159,6 @@
         this.options = $.extend(this.options, op);
 
     };
-
-
-
     Timeline.prototype.method = {
 
         //刻度尺上面的时间和位置互相转换的功能函数
@@ -177,19 +183,18 @@
     Timeline.prototype.setDate = function(data) {
         //设定信息数据
         //data必须是一个数组
-        var start, end,endPos;
+        var start, end, endPos;
         if ($.isArray(data) && data.length > 0) {
             //判断条数，超出进行处理
-            endPos=data.length<this.options.show_item_num?data.length:this.options.show_item_num;
-            console.log(endPos);
+            endPos = data.length < this.options.show_item_num ? data.length : this.options.show_item_num;
             start = data[0].start;
             end = data[endPos - 1].start;
             // 对传入的数值进行处理 设置一些额外的起始和结束时间，更完整的展示数据
             var differ = (end.valueOf() - start.valueOf()) / 10;
-            if(differ==0){   //当新闻条数只有1个的时候
-                differ=1*24*3600*1000;
+            if (differ == 0) { //当新闻条数只有1个的时候
+                differ = 1 * 24 * 3600 * 1000;
             }
-            start = new Date(start.valueOf() - differ/2);
+            start = new Date(start.valueOf() - differ / 2);
             end = new Date(end.valueOf() + differ * 2);
             this.options.data = data;
         } else {
@@ -219,7 +224,7 @@
     };
 
 
-     //增加事件
+    //增加事件
     Timeline.prototype.addEvent = function() {
 
         var that = this,
@@ -256,13 +261,13 @@
         });
 
         //按钮缩放、复原 实例
-        this.options.reset.on("click", function() {
+        this.dom.reset.on("click", function() {
             that.reset();
         })
-        this.options.big.on("click", function() {
+        this.dom.big.on("click", function() {
             that.zoom(1);
         })
-        this.options.small.on("click", function() {
+        this.dom.small.on("click", function() {
             that.zoom(-1);
         })
 
@@ -287,7 +292,7 @@
         if (zoomFactor <= -1) {
             zoomFactor = -0.2;
         }
-        
+
         // zoom start Date and end Date relative to the zoomAroundDate
         var startDiff = (this.options.start.valueOf() - time);
         var endDiff = (this.options.end.valueOf() - time);

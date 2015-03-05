@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
     <meta name="google" value="notranslate">
@@ -12,15 +12,14 @@
 
 
 
-
 <div id="timeLine">
    
 </div>
 
 <!--说明区-->
-<input type="button" id="reset" value="点击复位"/>
-<input type="button" id="big" value="放大"/>
-<input type="button" id="small" value="缩小"/>
+
+
+
 
 <div class="tips">
     <h3>tips:</h3>
@@ -36,70 +35,74 @@
 <script type="text/javascript" src="js/axis.js"></script>
 <script type="text/javascript" src="js/slider.js"></script>
 
+<script type="text/javascript" src="js/video.js"></script>
+<script type="text/javascript" src="js/videoPc.js"></script>
 <script>
     var timeline=new Timeline($("#timeLine"),{
         //配置项
         "width": 1000,        //总体宽度
         "height": 800,        //总体高度
         //按钮
-        "reset": $("#reset"),
+        "reset": $("#reset"),   //三个方法
         "big": $("#big"),
         "small": $("#small"),
         //各种宽高配置
-        "slider_width":900,
-        "slider_height":320,
-        "item_width":120,
-        "item_height":40,
-        "item_wrap_height":190,   //事件块外层的高度
-        "axis_wrap_height":100,   //刻度尺外层的高度
-        "dataType":2,             //详细内容的展示形式  1. 图片
-                                  //2.图文混排  
-                                  //3.视频  4.其他
+        "slider_margin_bottom":50,
         "skin":"skinClass",
-        "show_item_num":2          //时间轴上初始展示多少条新闻 
+        "show_item_num":4 ,        //时间轴上初始展示多少条新闻 
+        "data":[
+              /*
+                 dataType
+                   1、图片       title、start、img
+                   2、图文混排       
+                   3、视频
+                   4、html内容
+              */
+            {   
+                //图片    title、start、img 
+                "dataType":1,     
+                "title":"test1 图片类型",
+                "start":new Date(2010,7,23,23,0,0),
+                "img":"img/1.jpg"
+            },{
+                //图文混排     title、start、img   des
+                "dataType":2,
+                "title":"test2 图文混排",
+                "start":new Date(2010,7,24,16,0,0),
+                "img":"img/2.jpg",
+                "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。名美国囚犯杰瑞米秘克斯因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。"
+            },{
+                "dataType":3,
+                 //视频    title、start、videoId
+                "title":"test3 视频",
+                "start":new Date(2010,7,26),
+                "videoId":"01828f54-53fd-423f-91f3-eafc9280870e"
+            },{
+                "dataType":4 ,
+                 //html内容    title、start、img   des
+                "title":"test4 固定html",
+                "start":new Date(2010,7,28),
+                "htmlContent":'<p>在世界大国当中，中国的国防现代化的路应该说走得还是相当艰难的，大部分的军事装备、研发都要靠自己来做，甚至是从头做起。另外，我们广大官兵的保障还需要不断地加强。但是从根本上来讲，中国的国防政策还是防御性的，这是在宪法当中明确规定的。在这个方向上，在这个原则上，我们不会轻易地改变。我们改革开放这么多年取得了这么大的成就，我们不是靠炮舰开路去开拓经贸的，而是完全去靠互利互惠的合作，甚至是让利的合作。这条道路、和平发展的道路，我们走得是成功的，我们今后会继续坚持走和平发展的道路。谢谢。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://img.ifeng.com/page/Logo.gif" width="15" height="17"></a></span></p>' 
+            },{
+                 "dataType":3,
+                 //视频    title、start、videoId
+                "title":"test5足球杯视频",
+                "start":new Date(2010,7,29),
+                "videoId":"01ae5dec-3946-4d66-b458-1cb4ca3ac80d"
+            },{
+                 "dataType":3,
+                 //视频    title、start、videoId
+                "title":"test6视频",
+                "start":new Date(2010,7,30),
+                "videoId":"01678257-0769-4840-b63e-c02c0662acb5"
+                //备用id
+                //guid=01b0720e-cc58-4560-9be3-0f7f4baab1cb&from=niushi&AutoPlay=true&guidList=01b0720e-cc58-4560-9be3-0f7f4baab1cb,01ca343e-abec-4f89-8a83-2585a669c31d,01308976-a138-4185-af5e-af543710df5e,01110067-2750-473b-a46f-a7bcc12d61e3,016e0854-41b1-4c0c-9163-27cc5d7e8e17,0173aa1b-3ecd-46bd-8c7a-d6a449e6a3db,01b65b97-4d80-46a1-83c7-1ba2965d9453,014b1833-7f69-40ea-8489-0c4317fe46c1,01f09942-cf9c-44be-9e43-837235b18f1e,01cd82d1-114b-4701-b737-0a3ebe95928a,019fe046-a74a-4833-86c5-2fe1d13ba4af,01e97d50-254b-4264-9717-5102f376801b,01a7049a-d90f-4aea-9b30-46a2088201ca,012e433c-6a36-47f1-b699-2e3a5e45bcbd
+            }
+        ]
     });
     timeline.init();
     //也可以通过新增加载数据
-    timeline.addDate([{
-            "start": new Date(2010,7,23,23,0,0),
-            "title": "test1",
-           "img":"img/1.jpg",
-            "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。"
-
-        }, {
-            "start": new Date(2010,7,24,16,0,0),
-            "title": "test2",
-            "img":"img/2.jpg",
-            "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。"
-
-        }, {
-            "start": new Date(2010,7,26),
-            "title": "test3",
-            "img":"img/3.jpg",
-            "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。"
-
-        }, {
-            "start": new Date(2010,7,28),
-            "title": "test4",
-            "img":"img/4.jpg",
-            "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。"
-
-        }, {
-            "start": new Date(2010,7,29),
-            "title": "test5",
-            "img":"img/5.jpg",
-            "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。"
-
-        },{
-            "start": new Date(2010,8,3),
-            "title": "test6",
-            "img":"img/1.jpg",
-            "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。"
-
-        }
-        ]
-
-    )
+    //timeline.addDate()
 
 </script>
 </body>

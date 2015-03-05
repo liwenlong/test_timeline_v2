@@ -1,7 +1,7 @@
 function Items(options) {
 	this.options = {
 		"container": $("#timeLine"),
-		"height": 190,
+		"height": 200,
 		"basewidth": 30,
 		"start": null,
 		"end": null,
@@ -132,7 +132,7 @@ Items.prototype.addEvent = function() {
 	that.dom.frame.on("click", "div", function() {
 		var index = that.getIndex(this);
 		that.selectIndex(index);
-
+		that.trigger('select', index);
 	});
 	//@ToDo  其他点击事件处理
 
@@ -174,7 +174,7 @@ Items.prototype.selectIndex = function(index) {
 	//}
 
 	
-	this.trigger('select', index);
+	
 
 	this.index = index;
 };
