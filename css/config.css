@@ -1,0 +1,69 @@
+#config_warp{
+   width:1200px;
+   height: auto;
+   margin: 20px auto;
+	font-size:14px;
+	font-family: "微软雅黑";
+}
+select{
+	font-size:14px;
+}
+h1{
+   text-align: center;
+  
+}
+.content_unit{
+
+	background: #eee;
+	margin-bottom: 30px;
+	padding: 30px;
+	line-height: 30px;
+}
+
+.config_hide{
+	display: none;
+}
+.card{
+	width: 80px;
+	height: 50px;
+	background: blue;
+	color: yellow;
+	font-size: 12px;
+	text-align: center;
+	line-height: 50px;
+	float: left;
+	margin-right: 50px;
+	cursor: pointer;
+}
+.card_on{
+	background: red;
+}
+
+.chagneType{height:auto;}
+.clearfix{overflow: hidden;}
+.remove_block{
+	 width: 120px;
+	 height: 30px;
+	 background: green;
+	 color: white;
+	 float: right;
+	 text-align: center;
+	 cursor: pointer;
+}
+.config_box_add{
+  width: 170px;
+  height:60px;
+
+  margin: 30px;
+  background: yellow;
+  line-height: 60px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#show_code{
+	background: #eee;
+	padding: 30px;
+	white-space:normal;
+	color: #f60;
+}
