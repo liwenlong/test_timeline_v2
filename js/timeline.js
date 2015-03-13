@@ -15,7 +15,7 @@
 
 ;
 (function($) {
-    function Timeline(container, options) {
+    function Timeline(container) {
         if (!container) {
             //this.dom.creat();  //创建默认的dom
             return;
@@ -46,27 +46,33 @@
             "item": "items",
             "current": "current"
         };
-        this.setOptions(options); //合并参数
 
     }
 
-    Timeline.prototype.init = function() {
-
+    Timeline.prototype.init = function(options) {
+        this.dom.container.html("");
+        this.setOptions(options); //合并参数
         this.setDate(this.options.data); //初始化data
+        if(this.dataLength===0){
+           this.showErrorMessage(0); 
+           return;
+        };
         this.setDomCss(); //设置dom的css
         this.applyRange(); //设置事件比例尺   
         //创建子组件  slider items axis  
-        this.slider = new Slider({
-            "dataType": this.options.dataType,
+        
+
+        var slideDate={
             "data": this.options.data,
             "width": this.options.width * 0.8,
             "height": this.options.height - 300 - this.options.slider_margin_bottom,
             "slider_margin_bottom": this.options.slider_margin_bottom
-        });
-        if (!this.dom.frame) {
-            //将item和axis外面包一层div，以及背景，选中div等的增加处理
-            this.creatTimelineBottomDiv();
-        }
+        };
+        this.slider = new Slider(slideDate);
+       
+         //将item和axis外面包一层div，以及背景，选中div等的增加处理
+        this.creatTimelineBottomDiv();
+      
         var itemDate = {
             "container": this.dom.frame,
             "width": this.options.width * 0.95,
@@ -76,6 +82,7 @@
             "end": this.options.end,
             "data": this.options.data
         }
+
         this.items = new Items(itemDate);
         var axisData = {
             "container": this.dom.frame,
@@ -86,10 +93,6 @@
             "end": this.options.end
         }
         this.axis = new Axis(axisData);
-
-
-
-
         this.render();
         this.addEvent(); //绑定事件
 
@@ -125,7 +128,6 @@
 
     Timeline.prototype.creatTimelineBottomDiv = function() {
             this.dom.frame = $('<div class="timeLine-bottom"></div>');
-
             //创建放大缩小工具
             this.dom.toolBar = $('<div class="toolBar"></div>');
             this.dom.big = $('<div id="big"></div>');
@@ -157,6 +159,13 @@
     Timeline.prototype.setOptions = function(op) {
         if (!op) return;
         this.options = $.extend(this.options, op);
+        this.options.slider_margin_bottom=parseInt(this.options.slider_margin_bottom);
+        //对数据按日期进行排序
+        var data=this.options.data;
+        data.sort(function(a,b){
+            return a.start.getTime()-b.start.getTime();
+        })
+
 
     };
     Timeline.prototype.method = {
@@ -184,8 +193,10 @@
         //设定信息数据
         //data必须是一个数组
         var start, end, endPos;
+        this.dataLength=data.length;
         if ($.isArray(data) && data.length > 0) {
             //判断条数，超出进行处理
+            this.options.show_item_num=parseInt(this.options.show_item_num);
             endPos = data.length < this.options.show_item_num ? data.length : this.options.show_item_num;
             start = data[0].start;
             end = data[endPos - 1].start;
@@ -273,7 +284,10 @@
 
 
     };
-
+    Timeline.prototype.showErrorMessage=function(type){
+         var messageArr=["无数据，请重新配置数据"];
+         this.dom.container.html(messageArr[type]);
+    }
     //zoom  时间轴缩放   
     //zoomFactor  缩放参数   放大为1，缩小为-1
     //currenX  缩放时候，鼠标所停留的位置

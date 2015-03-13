@@ -10,8 +10,6 @@
 <body>
 
 
-
-
 <div id="timeLine">
    
 </div>
@@ -34,11 +32,10 @@
 <script type="text/javascript" src="js/items.js"></script>
 <script type="text/javascript" src="js/axis.js"></script>
 <script type="text/javascript" src="js/slider.js"></script>
-
 <script type="text/javascript" src="js/video.js"></script>
 <script type="text/javascript" src="js/videoPc.js"></script>
 <script>
-    var timeline=new Timeline($("#timeLine"),{
+    var data={
         //配置项
         "width": 1000,        //总体宽度
         "height": 800,        //总体高度
@@ -96,14 +93,18 @@
                 "start":new Date(2010,7,30),
                 "videoId":"01678257-0769-4840-b63e-c02c0662acb5"
                 //备用id
-                //guid=01b0720e-cc58-4560-9be3-0f7f4baab1cb&from=niushi&AutoPlay=true&guidList=01b0720e-cc58-4560-9be3-0f7f4baab1cb,01ca343e-abec-4f89-8a83-2585a669c31d,01308976-a138-4185-af5e-af543710df5e,01110067-2750-473b-a46f-a7bcc12d61e3,016e0854-41b1-4c0c-9163-27cc5d7e8e17,0173aa1b-3ecd-46bd-8c7a-d6a449e6a3db,01b65b97-4d80-46a1-83c7-1ba2965d9453,014b1833-7f69-40ea-8489-0c4317fe46c1,01f09942-cf9c-44be-9e43-837235b18f1e,01cd82d1-114b-4701-b737-0a3ebe95928a,019fe046-a74a-4833-86c5-2fe1d13ba4af,01e97d50-254b-4264-9717-5102f376801b,01a7049a-d90f-4aea-9b30-46a2088201ca,012e433c-6a36-47f1-b699-2e3a5e45bcbd
+                
             }
         ]
-    });
-    timeline.init();
+    };
+    var timeline=new Timeline($("#timeLine"));
+    timeline.init(data);
     //也可以通过新增加载数据
     //timeline.addDate()
-
+    window.addEventListener("message",function(event){
+           if(!event.data) return;
+            timeline.init(event.data);
+    })
 </script>
 </body>
 </html>

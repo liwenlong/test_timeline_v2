@@ -22,7 +22,7 @@ Slider.prototype.init = function(data) {
 	this.setOptions(data);
 	var dom = this.dom;
 	var len=this.length||0;
-	if (!dom.frame) {
+	
 		dom.frame = $('<div id="slider"></div>');
 		dom.frame.css({ //初始化宽、高
 			"height": this.options.height,
@@ -36,7 +36,7 @@ Slider.prototype.init = function(data) {
 		dom.frame.append(dom.pre);
 		dom.frame.append(dom.next);
 		dom.frame.append(dom.content);
-	}
+	
 	this.setDate(this.options.data);
 }
 

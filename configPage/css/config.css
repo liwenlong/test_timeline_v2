@@ -1,0 +1,183 @@
+#config_warp{
+   width:1200px;
+   height: auto;
+   margin: 20px auto;
+	font-size:14px;
+	font-family: "微软雅黑";
+}
+select{
+	font-size:14px;
+}
+h1{
+   text-align: center;
+  
+}
+.content_unit{
+
+	background: #eee;
+	margin-bottom: 30px;
+	padding: 30px;
+	line-height: 30px;
+}
+
+.config_hide{
+	display: none;
+}
+.card{
+	width: 80px;
+	height: 50px;
+	background: rgb(46, 214, 120);
+	color: yellow;
+	font-size: 12px;
+	text-align: center;
+	line-height: 50px;
+	float: left;
+	margin-right: 50px;
+	cursor: pointer;
+	border-radius: 15px;
+}
+.card_on{
+	background: rgb(252, 86, 139);
+}
+
+.chagneType{height:auto;}
+.clearfix{overflow: hidden;}
+.remove_block{
+	 width: 25px;
+	 height: 25px;
+	 background: url(http://y1.ifengimg.com/fe/timeline/bootstrap/img/close_01.gif) no-repeat;
+	 color: white;
+	 float: right;
+	 text-align: center;
+	 cursor: pointer;
+}
+.remove_block:hover{
+	background: url(http://y1.ifengimg.com/fe/timeline/bootstrap/img/close_02.gif) no-repeat;
+
+}
+.config_box_add{
+  width: 170px;
+  height:60px;
+  margin: 30px;
+  line-height: 60px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 30px;
+  background: rgb(193, 207, 30);
+}
+.config_box_add:hover{
+    
+
+ background: rgb(236, 255, 15);
+}
+
+#show_code{
+	background: #eee;
+	padding: 30px;
+	white-space:normal;
+	color: #f60;
+}
+
+.marsk{
+	display: none;
+	position: absolute;
+	top:0px;
+	left:0px;
+	height:0px;
+	width: 100%;
+	height:100%;
+	background: white;
+}
+
+.toolbar{
+	width:80px;
+	height:150px;
+	position:fixed;
+	right: 100px;
+	top:40%;
+	font-size:12px;
+}
+.toolbar p{
+	width: auto;
+	text-align: center;
+	height:40px;
+	line-height: 40px;
+	font-size: 14px;
+	background: #222  repeat-x;
+	display: inline-block;
+	padding: 5px 10px 6px;
+	color: #fff;
+	text-decoration: none;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	-moz-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+	-webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+	text-shadow: 0 -1px 1px rgba(0,0,0,0.25);
+	border-bottom: 1px solid rgba(0,0,0,0.25);
+	position: relative;
+	cursor: pointer 
+}
+
+.mask_close{
+   width:60px;
+   height:60px;
+   position: absolute;
+   background: #3196B1;
+   right:5px;
+   top:5px;
+   color: white;
+   text-align: center;
+   line-height: 60px;
+   cursor: pointer;
+   z-index: 150;
+   border-radius:30px;
+
+}
+.mask_close:hover{
+	background: #39BF08;
+	
+}
+.config_setDate,.config_getDate{
+	 position: relative;
+	 width:auto;
+	 height:auto;
+	 left:20%;
+	 top:200px;
+	 padding: 20px;
+}
+.config_setDate_are,.config_getDate_are{
+	float: right;
+}
+.configBtn{
+	text-align: right;
+}
+.setDatBtn{
+    
+	
+}
+.iframe_close{
+	right:50px;
+	top:50px;
+}
+.config_getDate_tips{
+	clear:both;
+	font-size: 12px;
+	color: #545454;
+	padding: 5px;
+}
+.config_iframe{
+	width: 80%;
+	left:9%;
+	height:1100px;
+}
+.gobal_add_block{
+	
+	border: 0;
+	padding: 10px;
+	border-radius: 10px;
+	background: rgb(193, 207, 30);
+}
+.gobal_add_block:hover{
+
+	background:rgb(236, 255, 15)
+}

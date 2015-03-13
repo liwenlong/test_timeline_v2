@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>页面配置</title>
+	<link rel="stylesheet" type="text/css" href="css/config.css">
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/dialog.js"></script>
+	<script type="text/javascript">
+	//完整的参数格式如下：
+	
+	 // var data={
+  //       //配置项
+  //       "width": 1000,        //总体宽度
+  //       "height": 800,        //总体高度
+  //       //按钮
+  //       "reset": $("#reset"),   //三个方法
+  //       "big": $("#big"),
+  //       "small": $("#small"),
+  //       //各种宽高配置
+  //       "slider_margin_bottom":50,
+  //       "skin":"skinClass",
+  //       "show_item_num":4 ,        //时间轴上初始展示多少条新闻 
+  //       "data":[
+  //             /*
+  //                dataType
+  //                  1、图片       title、start、img
+  //                  2、图文混排       
+  //                  3、视频
+  //                  4、html内容
+  //             */
+  //           {   
+  //               //图片    title、start、img 
+  //               "dataType":1,     
+  //               "title":"test1 图片类型",
+  //               "start":new Date(2010,7,23,23,0,0),
+  //               "img":"img/1.jpg"
+  //           },{
+  //               //图文混排     title、start、img   des
+  //               "dataType":2,
+  //               "title":"test2 图文混排",
+  //               "start":new Date(2010,7,24,16,0,0),
+  //               "img":"img/2.jpg",
+  //               "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。名美国囚犯杰瑞米秘克斯因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。"
+  //           },{
+  //               "dataType":3,
+  //                //视频    title、start、videoId
+  //               "title":"test3 视频",
+  //               "start":new Date(2010,7,26),
+  //               "videoId":"01828f54-53fd-423f-91f3-eafc9280870e"
+  //           },{
+  //               "dataType":4 ,
+  //                //html内容    title、start、img   des
+  //               "title":"test4 固定html",
+  //               "start":new Date(2010,7,28),
+  //               "htmlContent":'<p>在世界大国当中，中国的国防现代化的路应该说走得还是相当艰难的，大部分的军事装备、研发都要靠自己来做，甚至是从头做起。另外，我们广大官兵的保障还需要不断地加强。但是从根本上来讲，中国的国防政策还是防御性的，这是在宪法当中明确规定的。在这个方向上，在这个原则上，我们不会轻易地改变。我们改革开放这么多年取得了这么大的成就，我们不是靠炮舰开路去开拓经贸的，而是完全去靠互利互惠的合作，甚至是让利的合作。这条道路、和平发展的道路，我们走得是成功的，我们今后会继续坚持走和平发展的道路。谢谢。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://img.ifeng.com/page/Logo.gif" width="15" height="17"></a></span></p>' 
+  //           },{
+  //                "dataType":3,
+  //                //视频    title、start、videoId
+  //               "title":"test5足球杯视频",
+  //               "start":new Date(2010,7,29),
+  //               "videoId":"01ae5dec-3946-4d66-b458-1cb4ca3ac80d"
+  //           },{
+  //                "dataType":3,
+  //                //视频    title、start、videoId
+  //               "title":"test6视频",
+  //               "start":new Date(2010,7,30),
+  //               "videoId":"01678257-0769-4840-b63e-c02c0662acb5"
+  //               //备用id
+                
+  //           }
+  //       ]
+  //   };
+	</script>
+</head>
+<body>
+	 
+	 <div id="config_warp">
+	 	 <h1 class="content_unit">时间轴可视化配置</h1>
+	      <h3>全局配置</h3>
+	 	 <div class="config_global content_unit">
+	 	 	<table>
+	 	 		
+ 	 			<tr>
+ 	 				<td>容器宽度</td>
+	 	 			<td>
+	 	 				<input type="text" name="width" />
+	 	 			</td>
+ 	 			</tr>
+ 	 			<tr>
+ 	 				<td>容器高度</td>
+	 	 			<td>
+	 	 				<input type="text" name="height" />
+	 	 			</td>
+ 	 			</tr>
+ 	 			<tr>
+ 	 				<td>信息展示区和轴之间的距离</td>
+	 	 			<td>
+	 	 				<input type="text" name="slider_margin_bottom" />
+	 	 			</td>
+ 	 			</tr>
+ 	 			<tr>
+ 	 				<td>换肤</td>
+	 	 			<td>
+	 	 				<select name="skin">
+	 	 					<option value="skin_normal" >默认(黄色)</option>
+	 	 					<option value="skin_red" >红色</option>
+	 	 					<option value="skin_black">黑色</option>
+	 	 				</select>
+	 	 			</td>
+ 	 		    </tr>	
+ 	 		    <tr>
+ 	 				<td>初始化时，时间轴能显示的新闻的条数</td>
+	 	 			<td>
+	 	 				<input type="text" name="show_item_num" />
+	 	 			</td>
+ 	 		    </tr>	
+	 	 	</table>
+	 	 </div>
+	 	 <h3>
+	 	 	新闻配置 
+	 	 	<input type="button" value="+ 点击增加新闻" class="gobal_add_block add_block"/> 
+	 	 </h3>
+
+	 	  <!--默认一个内容块-->
+		<div class="config_box content_unit">
+		    <div class="remove_block" title="关闭">
+		        
+		    </div>
+		    <div class="chagneType clearfix">
+		        <div>
+		            选择类型
+		        </div>
+		        <p class="card card_on" data-type="1">
+		            图片
+		        </p>
+		        <p class="card " data-type="2">
+		            图文混排
+		        </p>
+		        <p class="card" data-type="3">
+		            视频
+		        </p>
+		        <p class="card" data-type="4">
+		            html代码
+		        </p>
+		    </div>
+
+		    <div class="boxContent">
+		        <table>
+		            <tbody>
+		                <tr>
+		                    <td>
+		                        新闻类型
+		                    </td>
+		                    <td>
+		                        <h3>
+		                            图片
+		                        </h3>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>
+		                        标题
+		                    </td>
+		                    <td>
+		                        <input type="text" name="title">
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>
+		                        时间
+		                    </td>
+		                    <td>
+		                        <input type="datetime-local" name="start">
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>
+		                        图片URL
+		                    </td>
+		                    <td>
+		                        <input type="text" name="img">
+		                    </td>
+		                </tr>
+		            </tbody>
+		        </table>
+		    </div>
+		    <div class="config_box_add add_block">
+		        新增一个
+		    </div>
+		</div>
+	 </div>
+	 
+	 <div class="config_setDate marsk">
+	 	<div class="setDate_close mask_close">关闭</div>
+	 	<h3>在下面输入配置数据</h3>
+	 	<textarea rows="20" cols="120" class="config_setDate_are"></textarea>
+	 	<p class="configBtn setDate_close"><input type="button" class="setDatBtn" value="确认并设置数据" /></p>
+	 </div>
+
+	 <div class="config_getDate marsk">
+	 	<h3>当前的配置数据为：</h3>
+	 	<div class="mask_close getDate_close">
+	 		关闭
+	 	</div>
+	
+	 	<textarea rows="20" cols="120" class="config_getDate_are" disabled="disabled">  </textarea>
+	 	<p class="config_getDate_tips">复制上方数据即可</p>	
+	 	
+	 	
+	 </div>		
+
+	 <div class="config_iframe marsk">
+	 	<div class="mask_close iframe_close">关闭</div>
+	 	<h1>时间轴预览</h1>
+	 	<iframe src="http://localhost/test_timeline_v2/index.html"  width="100%" height="950" style="position: relative;overflow: visible;border: 0;"></iframe>	
+	 </div>	
+	 <div class="toolbar">
+	 	 <p id="setDate">导入配置</p>
+		 <p id="getDate">查看配置</p>
+		 <p id="preview">预览</p>
+	 </div>
+	
+	<script type="text/javascript" src="js/config.js"></script>
+
+</body>
+</html>
