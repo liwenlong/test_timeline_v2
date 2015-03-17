@@ -12,16 +12,14 @@
    
  */
 
+
 ;
 (function($) {
-    
-    function Timeline(container,options) {
-
-        if (!container||$("#"+container).length<=0) {
-            //节点不存在
-            return false;
+    function Timeline(container) {
+        if (!container) {
+            //this.dom.creat();  //创建默认的dom
+            return;
         }
-        
         this.options = { //default options
             "width": 1500,
             "height": 800,
@@ -42,19 +40,16 @@
         };
         this.resetDate = {};
         this.dom = {
-            "container": $("#"+container), //defalut parent dom
+            "container": container, //defalut parent dom
             "frame": null,
             "axis": "axis",
             "item": "items",
             "current": "current"
         };
-       
-        this.init(options);
 
     }
 
     Timeline.prototype.init = function(options) {
-
         this.dom.container.html("");
         this.setOptions(options); //合并参数
         this.setDate(this.options.data); //初始化data
@@ -62,12 +57,10 @@
            this.showErrorMessage(0); 
            return;
         };
-
         this.setDomCss(); //设置dom的css
         this.applyRange(); //设置事件比例尺   
-        //创建子组件  slider items axis
-
-       
+        //创建子组件  slider items axis  
+        
 
         var slideDate={
             "data": this.options.data,
@@ -127,13 +120,9 @@
     Timeline.prototype.setDomCss = function() {
         this.dom.container.css({
             "width": this.options.width,
-            "height":this.options.height
+            "height": this.options.height
         })
-        if(this.options.skin){
-            //换肤
-            this.dom.container.attr("class",this.options.skin);
-        }
-        
+        this.dom.container.addClass(this.options.skin);
     };
 
 
@@ -176,23 +165,30 @@
         data.sort(function(a,b){
             return a.start.getTime()-b.start.getTime();
         })
-        data=null;
+
 
     };
-    
-    Timeline.prototype.lineToTime=function(line){
-         if (typeof line == 'undefined') {
+    Timeline.prototype.method = {
+
+        //刻度尺上面的时间和位置互相转换的功能函数
+
+        lineToTime: function(line) {
+            if (typeof line == 'undefined') {
                 line = 0; //如果没有值，就默认0
             };
-            var addtime = line * this.options.ratio;
-            return new Date(this.options.start.valueOf() + addtime);
-    };
-    Timeline.prototype.timeToLine=function(date){
-          if (typeof date == 'undefined') {
+            var addtime = line * _this.options.ratio;
+            return new Date(_this.options.start.valueOf() + addtime);
+
+        },
+        timeToLine: function(date) {
+
+            if (typeof date == 'undefined') {
                 date = new Date(); //如果没有值，就默认当前时间
             }
-            return (date - this.options.start) / this.options.ratio;   
+            return (date - _this.options.start) / _this.options.ratio;
+        }
     };
+
     Timeline.prototype.setDate = function(data) {
         //设定信息数据
         //data必须是一个数组
@@ -298,7 +294,7 @@
     Timeline.prototype.zoom = function(zoomFactor, currenX) {
         var time;
         if (currenX) {
-            time = this.lineToTime(currenX);
+            time = this.method.lineToTime(currenX);
         } else {
 
             time = new Date((this.options.start.valueOf() + this.options.end.valueOf()) / 2);
@@ -330,6 +326,7 @@
 
 
     };
+
 
     window.Timeline = Timeline;
 

@@ -3,27 +3,27 @@
 <head>
     <meta name="google" value="notranslate">
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>test 轴</title>
+    <title>这个仅供iframe使用的时间轴</title>
    <link rel="stylesheet" type="text/css" href="css/main.css">
  
 </head>
 <body>
 
 
-<!--时间轴的正文内容 begin-->
 <div id="timeLine">
    
 </div>
-<!--时间轴的正文内容 end-->
-
 
 <!--说明区-->
-<!-- 
+
+
+
+
 <div class="tips">
     <h3>tips:</h3>
     <h3>1、也可通过鼠标滚轮来触发时间轴的缩放，缩放范围年、月、日、小时、分、秒</h3>
     <h3>2、时间轴可以左右拖拽移动</h3>   
-</div> -->
+</div>
 
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/jquery.mousewheel.min.js"></script>
@@ -35,7 +35,7 @@
 <script type="text/javascript" src="js/video.js"></script>
 <script type="text/javascript" src="js/videoPc.js"></script>
 <script>
-    var timeline=new Timeline("timeLine",{
+    var data={
         //配置项
         "width": 1000,        //总体宽度
         "height": 800,        //总体高度
@@ -45,7 +45,7 @@
         "small": $("#small"),
         //各种宽高配置
         "slider_margin_bottom":50,
-        "skin":"redClass",
+        "skin":"skinClass",
         "show_item_num":4 ,        //时间轴上初始展示多少条新闻 
         "data":[
               /*
@@ -96,11 +96,15 @@
                 
             }
         ]
-    });
-    // timeline.init(jsonData);
+    };
+    var timeline=new Timeline($("#timeLine"));
+    timeline.init(data);
     //也可以通过新增加载数据
     //timeline.addDate()
-
+    window.addEventListener("message",function(event){
+           if(!event.data) return;
+            timeline.init(event.data);
+    })
 </script>
 </body>
 </html>

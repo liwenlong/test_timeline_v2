@@ -99,7 +99,6 @@
 	top: 30px;
 	background: white;
 	cursor: pointer;
-	line-height:40px;
 }
 
 .item_block_on {
@@ -117,7 +116,6 @@ slider
 */
 
 #slider {
-	background: white;
 	overflow: hidden;
 	position: relative;
 	margin: 0px auto;
@@ -244,14 +242,4 @@ slider
    background-repeat: no-repeat;
    background-position: -328px 0;
    cursor: pointer;
-}
-
-.redClass{
-
-}
-
-
-//换肤测试
-.redClass #slider{
-	background:white;
 }

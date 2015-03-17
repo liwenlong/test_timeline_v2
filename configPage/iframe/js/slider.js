@@ -29,14 +29,13 @@ Slider.prototype.init = function(data) {
 			"width": this.options.width,
 			"margin-bottom": this.options.slider_margin_bottom
 		})
-		
+		this.options.container.append(dom.frame);
 		dom.pre = $('<div class="leftBar">前一张</div>');
 		dom.next = $('<div class="rightBar">下一张</div>');
 		dom.content = $('<ul class="slider-content" style="width:9999px;height:'+this.options.height+'px;"></ul>');
 		dom.frame.append(dom.pre);
 		dom.frame.append(dom.next);
 		dom.frame.append(dom.content);
-		this.options.container.append(dom.frame);
 	
 	this.setDate(this.options.data);
 }
@@ -169,8 +168,8 @@ Slider.prototype.setDate = function(data) {
 }
 
 Slider.prototype.showIndex = function(index, Timer) {
-	inde = index ||0;
-	Timer = Timer||1000;
+	if (!index) index = 0;
+	if (!Timer) Timer = 1000;
 	if (index >= this.length || index < 0) {
 		return;
 	}
@@ -186,7 +185,17 @@ Slider.prototype.showIndex = function(index, Timer) {
 	 	}
 		
 	}
-	
+	// preDom.animate({
+	// 	"opacity": 0
+	// }, Timer, function() {
+	// 	$(this).hide();
+	// });
+	// this.dom.frame.find("li").eq(index).animate({
+	// 	"opacity": 1
+	// }, Timer, function() {
+	// 	$(this).show();
+	// 	_this.currenIndex = index;
+	// })
 	var ulDom=this.dom.content;
 	ulDom.animate({
 		"left":-index*this.options.width
@@ -234,23 +243,15 @@ Slider.prototype.events = function() {
 	pre.on("click", function() {
 		//增加无法额外点击
 		if (!preClickTime || new Date() - preClickTime > 400) {
-			var triggerIndex=_this.getCurrenIndex();
-			_this.showIndex(triggerIndex - 1);
-			setTimeout(function(){
-				//_this.trigger('left', _this.getCurrenIndex());
-				_this.trigger('left', triggerIndex) ;
-			},0)
+			_this.showIndex(_this.getCurrenIndex() - 1);
+			_this.trigger('left', _this.getCurrenIndex());
 			preClickTime = new Date();
 		}
 	});
 	next.on("click", function() {
-
 		if (!nextClickTime || new Date() - nextClickTime > 400) {
-			var triggerIndex=_this.getCurrenIndex();
-			_this.showIndex(triggerIndex + 1);
-			setTimeout(function(){
-				_this.trigger('right', triggerIndex);
-			},0)
+			_this.showIndex(_this.getCurrenIndex() + 1);
+			_this.trigger('right', _this.getCurrenIndex());
 			nextClickTime = new Date();
 		}
 
