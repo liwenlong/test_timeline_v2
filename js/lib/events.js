@@ -1,5 +1,6 @@
-var Events = (function () {
-  // Events
+define(function(){
+
+   // Events
   // -----------------
   // Thanks to:
   //  - https://github.com/documentcloud/backbone/blob/master/backbone.js
@@ -177,4 +178,6 @@ var Events = (function () {
   }
 
   return Events;
-}());
+
+})
+ 

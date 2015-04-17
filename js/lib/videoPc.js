@@ -1,4 +1,6 @@
-var SpecailVideo = (function () {
+
+define(["video"],function(F){
+ var SpecailVideo = (function () {
 
   var win = window;
   var doc = document;
@@ -319,3 +321,6 @@ var SpecailVideo = (function () {
 
   return Video;
 }());
+  return SpecailVideo;
+})
+

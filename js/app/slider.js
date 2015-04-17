@@ -1,5 +1,6 @@
+define(["jquery","events","videoPc"],function($,Events,SpecailVideo){
 
-function Slider(options) {
+  function Slider(options) {
 	this.currenIndex = 0;
 	this.length = null;
 	this.options = {
@@ -137,7 +138,7 @@ Slider.prototype.setDate = function(data) {
 		var videoList = {};
 	    for(var i=0;i<videoInfoList.length;i++){
         	(function(i){
-            videoList[videoInfoList[i].containerId+""]=new window.SpecailVideo();
+            videoList[videoInfoList[i].containerId+""]=new SpecailVideo();
         	videoList[videoInfoList[i].containerId+""].create(videoInfoList[i]);
         	})(i)
          }
@@ -259,3 +260,8 @@ Slider.prototype.events = function() {
 }
 
 Events.mixTo(Slider);
+return Slider;
+
+
+
+})

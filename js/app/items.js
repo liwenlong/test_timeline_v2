@@ -1,4 +1,5 @@
-function Items(options) {
+define(["jquery","events"],function($,Events){
+   function Items(options) {
 	this.options = {
 		"container": $("#timeLine"),
 		"height": 200,
@@ -52,7 +53,6 @@ Items.prototype.init = function(options) {
 		this.options.start = start;
 		this.options.end = end;
 	}
-
 	this.applyRange();
 	this.creeatItem();
 	this.addEvent();
@@ -62,12 +62,13 @@ Items.prototype.init = function(options) {
 //start, end  起始时间
 //data  信息块的数据
 Items.prototype.render = function(start, end, data) {
+
 	this.applyRange(start, end);
 	//将dom的left置为0  为了解决在模拟拖拽时候，left被改动，在渲染的时候需要重置一下
 	this.dom.frame.css({
 		"left": "0px"
 	})
-	if (data && this.options.data != data) {
+	if (data) {
 		this.options.data = data;
 		this.creeatItem();
 	} else {
@@ -263,6 +264,8 @@ Items.prototype.itemOverlap = function() {
 	removeOverlap(this.item, itemWidth, itemHeight, this.options.height-itemHeight, this.options.midH);
 
 
-};
+   };
 
-Events.mixTo(Items);
+   Events.mixTo(Items);
+   return Items;
+})

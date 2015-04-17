@@ -1,4 +1,6 @@
-function Axis(options) {
+define(["jquery","events"],function($,Events){
+
+  function Axis(options) {
 	this.options = {
 		"container": $("#timeLine"),
 		"width": 1500,
@@ -708,3 +710,9 @@ Axis.prototype.isMajor = function(currenTime) {
 };
 
 Events.mixTo(Axis);
+return Axis;
+
+
+})
+
+

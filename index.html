@@ -5,7 +5,6 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
     <title>test 轴</title>
    <link rel="stylesheet" type="text/css" href="css/main.css">
- 
 </head>
 <body>
 
@@ -25,78 +24,84 @@
     <h3>2、时间轴可以左右拖拽移动</h3>   
 </div> -->
 
-<script type="text/javascript" src="js/jquery.js"></script>
-<script type="text/javascript" src="js/jquery.mousewheel.min.js"></script>
-<script type="text/javascript" src="js/events.js"></script>
-<script type="text/javascript" src="js/timeline.js"></script>
-<script type="text/javascript" src="js/items.js"></script>
-<script type="text/javascript" src="js/axis.js"></script>
-<script type="text/javascript" src="js/slider.js"></script>
-<script type="text/javascript" src="js/video.js"></script>
-<script type="text/javascript" src="js/videoPc.js"></script>
+<script type="text/javascript" src="js/lib/require.js" data-main="js/app/timeline"></script>
 <script>
-    var timeline=new Timeline("timeLine",{
-        //配置项
-        "width": 1000,        //总体宽度
-        "height": 800,        //总体高度
-        //按钮
-        "reset": $("#reset"),   //三个方法
-        "big": $("#big"),
-        "small": $("#small"),
-        //各种宽高配置
-        "slider_margin_bottom":50,
-        "skin":"redClass",
-        "show_item_num":4 ,        //时间轴上初始展示多少条新闻 
-        "data":[
-              /*
-                 dataType
-                   1、图片       title、start、img
-                   2、图文混排       
-                   3、视频
-                   4、html内容
-              */
-            {   
-                //图片    title、start、img 
-                "dataType":1,     
-                "title":"test1 图片类型",
-                "start":new Date(2010,7,23,23,0,0),
-                "img":"img/1.jpg"
-            },{
-                //图文混排     title、start、img   des
-                "dataType":2,
-                "title":"test2 图文混排",
-                "start":new Date(2010,7,24,16,0,0),
-                "img":"img/2.jpg",
-                "des":"据台湾媒体报道，一名美国囚犯杰瑞米秘克斯因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。名美国囚犯杰瑞米秘克斯因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。"
-            },{
-                "dataType":3,
-                 //视频    title、start、videoId
-                "title":"test3 视频",
-                "start":new Date(2010,7,26),
-                "videoId":"01828f54-53fd-423f-91f3-eafc9280870e"
-            },{
-                "dataType":4 ,
-                 //html内容    title、start、img   des
-                "title":"test4 固定html",
-                "start":new Date(2010,7,28),
-                "htmlContent":'<p>在世界大国当中，中国的国防现代化的路应该说走得还是相当艰难的，大部分的军事装备、研发都要靠自己来做，甚至是从头做起。另外，我们广大官兵的保障还需要不断地加强。但是从根本上来讲，中国的国防政策还是防御性的，这是在宪法当中明确规定的。在这个方向上，在这个原则上，我们不会轻易地改变。我们改革开放这么多年取得了这么大的成就，我们不是靠炮舰开路去开拓经贸的，而是完全去靠互利互惠的合作，甚至是让利的合作。这条道路、和平发展的道路，我们走得是成功的，我们今后会继续坚持走和平发展的道路。谢谢。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://img.ifeng.com/page/Logo.gif" width="15" height="17"></a></span></p>' 
-            },{
-                 "dataType":3,
-                 //视频    title、start、videoId
-                "title":"test5足球杯视频",
-                "start":new Date(2010,7,29),
-                "videoId":"01ae5dec-3946-4d66-b458-1cb4ca3ac80d"
-            },{
-                 "dataType":3,
-                 //视频    title、start、videoId
-                "title":"test6视频",
-                "start":new Date(2010,7,30),
-                "videoId":"01678257-0769-4840-b63e-c02c0662acb5"
-                //备用id
-                
-            }
-        ]
-    });
+    require(["timeline"],function(Timeline){
+
+        var timeline = new Timeline("timeLine", {
+            //配置项
+            "width": 1000, //总体宽度
+            "height": 800, //总体高度
+            //按钮
+            "reset": $("#reset"), //三个方法
+            "big": $("#big"),
+            "small": $("#small"),
+            //各种宽高配置
+            "slider_margin_bottom": 50,
+            "skin": "redClass",
+            "show_item_num": 4, //时间轴上初始展示多少条新闻 
+            "data": [
+                /*
+                   dataType
+                     1、图片       title、start、img
+                     2、图文混排       
+                     3、视频
+                     4、html内容
+                */
+                {
+                    //图片    title、start、img 
+                    "dataType": 1,
+                    "title": "test1 图片类型",
+                    "start": new Date(2010, 7, 23, 23, 0, 0),
+                    "img": "img/1.jpg"
+                }, {
+                    //图文混排     title、start、img   des
+                    "dataType": 2,
+                    "title": "test2 图文混排",
+                    "start": new Date(2010, 7, 24, 16, 0, 0),
+                    "img": "img/2.jpg",
+                    "des": "据台湾媒体报道，一名美国囚犯杰瑞米秘克斯因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。据台湾媒体报道，一名美国囚犯杰瑞米秘克斯（Jeremy Meeks）因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。名美国囚犯杰瑞米秘克斯因为长得太帅而爆红，还有人将他的帅脸后制在各大知名品牌海报的男模特儿身上，而现在真的有一家模特儿经纪公司想要签下他，可以让他一个月赚进美金1.5到3万元（约9万到18万人民币）。"
+                }, {
+                    "dataType": 3,
+                    //视频    title、start、videoId
+                    "title": "test3 视频",
+                    "start": new Date(2010, 7, 26),
+                    "videoId": "01828f54-53fd-423f-91f3-eafc9280870e"
+                }, {
+                    "dataType": 4,
+                    //html内容    title、start、img   des
+                    "title": "test4 固定html",
+                    "start": new Date(2010, 7, 28),
+                    "htmlContent": '<p>在世界大国当中，中国的国防现代化的路应该说走得还是相当艰难的，大部分的军事装备、研发都要靠自己来做，甚至是从头做起。另外，我们广大官兵的保障还需要不断地加强。但是从根本上来讲，中国的国防政策还是防御性的，这是在宪法当中明确规定的。在这个方向上，在这个原则上，我们不会轻易地改变。我们改革开放这么多年取得了这么大的成就，我们不是靠炮舰开路去开拓经贸的，而是完全去靠互利互惠的合作，甚至是让利的合作。这条道路、和平发展的道路，我们走得是成功的，我们今后会继续坚持走和平发展的道路。谢谢。<span class="ifengLogo"><a href="http://www.ifeng.com/" target="_blank"><img src="http://img.ifeng.com/page/Logo.gif" width="15" height="17"></a></span></p>'
+                }, {
+                    "dataType": 3,
+                    //视频    title、start、videoId
+                    "title": "test5足球杯视频",
+                    "start": new Date(2010, 7, 29),
+                    "videoId": "01ae5dec-3946-4d66-b458-1cb4ca3ac80d"
+                }, {
+                    "dataType": 3,
+                    //视频    title、start、videoId
+                    "title": "test6视频",
+                    "start": new Date(2010, 7, 30),
+                    "videoId": "01678257-0769-4840-b63e-c02c0662acb5"
+                        //备用id
+
+                }
+            ]
+        });
+       timeline.addData([{
+                    //图片    title、start、img 
+                    "dataType": 1,
+                    "title": "test00000 ",
+                    "start": new Date(2010, 7, 22, 23, 0, 0),
+                    "img": "img/1.jpg"
+        }])
+
+
+
+    })
+    
     // timeline.init(jsonData);
     //也可以通过新增加载数据
     //timeline.addDate()

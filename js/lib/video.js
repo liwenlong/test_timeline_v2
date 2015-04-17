@@ -3,7 +3,8 @@
  * @version     : 1.0.6
  * 
  **/
-var F = (function (F) {
+ define(function(){
+    var F = (function (F) {
 
   "use strict";
 
@@ -546,6 +547,11 @@ var sendHTML5VideoInfo = function (params) {
     document.getElementsByTagName("head").item(0).appendChild(scriptDom);    
   }
 };
+  return F;
+ }
+
+ )
+
 
  /**
  * @description : 该文件用于实现播放器代码。(embed object video)
